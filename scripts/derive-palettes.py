@@ -142,7 +142,11 @@ def derive(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
             0.3: ([6, 10], [6, 8], [10, 10]),
             0.8: ([10, 16], [10, 12], [14, 16]),
         }[chroma]
-        region = {"hueFamilies": hues, "value": values, "chroma": core}
+        core_region = {
+            "hueFamilies": hues,
+            "value": values,
+            "chroma": core,
+        }
         eligible = [
             sample
             for sample in samples
@@ -189,7 +193,7 @@ def derive(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "family": family,
                 "dominant": dominant,
                 "axes": {"hue": hue, "value": value, "chroma": chroma},
-                "region": region,
+                "coreRegion": core_region,
                 "neighbors": [
                     NEIGHBOR_RING[(NEIGHBOR_RING.index(identifier) - 1) % 12],
                     NEIGHBOR_RING[(NEIGHBOR_RING.index(identifier) + 1) % 12],

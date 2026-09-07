@@ -5,6 +5,7 @@ import { colorSeasons, loadSeasons } from '../src/knowledge/load';
 import { colorSeasonSchema } from '../src/knowledge/schemas/seasons';
 import malformed from './fixtures/malformed-seasons.json';
 
+const HUE_FAMILIES = ['R', 'YR', 'Y', 'GY', 'G', 'BG', 'B', 'PB', 'P', 'RP'] as const;
 const lch65 = converter('lch65');
 const rgb = converter('rgb');
 const swatchDistance = differenceCiede2000();
@@ -48,6 +49,18 @@ function assertDisjointSupportRoles(entries: ColorSeason[]) {
     const accents = new Set(chromas('accent'));
     const shared = [...new Set(chromas('secondary-neutral'))].filter((chroma) => accents.has(chroma));
     expect(shared, `${entry.id}: secondary-neutral and accent share a chroma`).toEqual([]);
+  }
+}
+
+const CORE_REGION_SUPPORT_ROLES: PaletteEntry['role'][] = ['denim', 'metal'];
+
+function assertCoreHueContainment(entries: ColorSeason[]) {
+  for (const entry of entries) {
+    for (const swatch of entry.palette) {
+      if (CORE_REGION_SUPPORT_ROLES.includes(swatch.role)) continue;
+      const family = swatch.munsell.hue.replace(/[0-9.]/g, '');
+      expect(entry.coreRegion.hueFamilies, `${entry.id}: ${swatch.name} (${swatch.role}) sits outside coreRegion`).toContain(family);
+    }
   }
 }
 
@@ -133,6 +146,18 @@ it('detects secondary neutrals drawn from the accent chroma pool', () => {
     if (swatch.role === 'secondary-neutral') swatch.munsell.chroma = accent;
   }
   expect(() => assertDisjointSupportRoles(changed)).toThrow();
+});
+
+it('keeps every swatch except the declared support roles inside its core hue families', () => {
+  assertCoreHueContainment(colorSeasons);
+});
+
+it('detects an accent drawn from outside the core hue families', () => {
+  const changed = structuredClone(colorSeasons);
+  const entry = changed[0]!;
+  const outside = HUE_FAMILIES.find((family) => !entry.coreRegion.hueFamilies.includes(family))!;
+  entry.palette.find((swatch) => swatch.role === 'accent')!.munsell.hue = `5${outside}`;
+  expect(() => assertCoreHueContainment(changed)).toThrow();
 });
 
 it('reports neutral pairing coverage without rejecting a palette', () => {

@@ -8,7 +8,7 @@
       "value": 0.7,
       "chroma": -0.2
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "R",
         "YR",
@@ -814,7 +814,7 @@
       "value": 0.3,
       "chroma": 0.3
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "YR",
         "Y",
@@ -1619,7 +1619,7 @@
       "value": 0.0,
       "chroma": 0.8
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "R",
         "YR",
@@ -2425,7 +2425,7 @@
       "value": 0.7,
       "chroma": -0.2
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "G",
         "BG",
@@ -3232,7 +3232,7 @@
       "value": 0.3,
       "chroma": 0.3
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "G",
         "B",
@@ -4037,7 +4037,7 @@
       "value": 0.0,
       "chroma": -0.7
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "G",
         "BG",
@@ -4844,7 +4844,7 @@
       "value": 0.0,
       "chroma": -0.7
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "R",
         "YR",
@@ -5650,7 +5650,7 @@
       "value": 0.0,
       "chroma": 0.3
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "YR",
         "Y",
@@ -6455,7 +6455,7 @@
       "value": -0.7,
       "chroma": 0.3
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "R",
         "YR",
@@ -7261,7 +7261,7 @@
       "value": -0.7,
       "chroma": 0.3
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "G",
         "BG",
@@ -8068,7 +8068,7 @@
       "value": -0.3,
       "chroma": 0.3
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "G",
         "B",
@@ -8873,7 +8873,7 @@
       "value": 0.0,
       "chroma": 0.8
     },
-    "region": {
+    "coreRegion": {
       "hueFamilies": [
         "G",
         "BG",

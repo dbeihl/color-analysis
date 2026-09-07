@@ -44,7 +44,7 @@ export interface ColorSeason {
   family: 'spring' | 'summer' | 'autumn' | 'winter';
   dominant: Axis;
   axes: Record<Axis, number>;
-  region: {
+  coreRegion: {
     hueFamilies: string[];
     value: [number, number];
     chroma: [number, number];

@@ -33,7 +33,7 @@ export const colorSeasonSchema = z.strictObject({
   family: z.enum(['spring', 'summer', 'autumn', 'winter']),
   dominant: z.enum(['hue', 'value', 'chroma']),
   axes: z.strictObject({ hue: axis, value: axis, chroma: axis }),
-  region: z.strictObject({
+  coreRegion: z.strictObject({
     hueFamilies: z.array(hueFamily).min(1),
     value: interval.refine(([low, high]) => low >= 1 && high <= 9),
     chroma: interval.refine(([low]) => low > 0),

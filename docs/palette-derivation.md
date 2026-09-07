@@ -90,6 +90,8 @@ Value increases toward lightness, chroma increases toward saturation, and hue in
 Light regions use high values, deep regions low values, soft regions low chroma and bright regions high chroma, subject to the open limitation recorded below for the soft and light pair.
 The midrange True Spring and True Summer regions sit above True Autumn and True Winter in value so their palettes remain distinct.
 The core regions are joined by the support regions below; every support swatch retains the same value interval as its colour season.
+Each colour season serialises this core as `coreRegion`, which describes the core hue families and core chroma rather than the full extent of the palette beside it.
+The metal and denim support roles are drawn from outside it deliberately, and the base neutrals and secondary neutrals sit below its chroma floor, so `coreRegion` must not be read as the set of every swatch a colour season carries.
 These deliberately overlapping regions support comparison across boundaries rather than claiming twelve disjoint natural classes.
 
 ## Open limitation: soft and light share a chroma ladder
@@ -99,6 +101,10 @@ Their measured mean CIELAB chroma differs by well under one unit, so the declare
 In practice the soft and light palettes are separated by their value interval alone, and the cross-season chroma assertion passes on the incidental margin that value difference produces.
 Munsell chroma in this dataset moves in even integers, so there is no step available between 4 and 6 that would separate the two ladders as they currently stand.
 Whether the twelve colour seasons should be separated by chroma at all, or by value alone for this pair, is an open decision rather than a settled design, and it is recorded here so the next phase does not read the chroma axis as a property the data pins.
+
+The metal role has the same shape of limitation.
+It currently draws from a strict subset of the base-neutral pool, at the same chroma and within the same value interval, so the metal label records a naming convention rather than a colorimetric distinction that the data supports.
+Whether metal should get its own separable band is part of this same open decision, and it is left unanswered here for the same reason.
 
 ## Sampling and roles
 
