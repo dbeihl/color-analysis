@@ -65,6 +65,12 @@ it('scores palette swatches independently of declared season axes', () => {
   }
 });
 
+function contended(features: ReturnType<typeof measureColoring>, tolerance: number) {
+  const result = classifyColorSeason(features, tolerance);
+  return result.colorSeason.secondary.length > 0
+    || result.warnings.some(({ code }) => code === 'conflicting-signals');
+}
+
 describe('golden resolver cases', () => {
   it('draws every case from colours no palette contains', () => {
     expect(golden).toHaveLength(36);
@@ -90,14 +96,37 @@ describe('golden resolver cases', () => {
     expect(monkBands).toEqual(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
   });
 
-  it('offers a second season exactly when the recorded margin is inside the tolerance', () => {
-    const margins = golden.map(({ margin }) => margin);
-    expect(margins.filter((margin) => margin >= 0.002 && margin <= 0.017).length).toBeGreaterThanOrEqual(10);
+  it('pins every recorded margin on both sides of the tolerance it needs', () => {
     for (const fixture of golden) {
-      const result = resolveColoring(fixture.input);
-      const contended = result.colorSeason.secondary.length > 0
-        || result.warnings.some(({ code }) => code === 'conflicting-signals');
-      expect(contended, fixture.id).toBe(fixture.margin <= BOUNDARY_TOLERANCE);
+      const features = measureColoring(fixture.input);
+      expect(contended(features, fixture.margin - 1e-6), fixture.id).toBe(false);
+      expect(contended(features, fixture.margin + 1e-6), fixture.id).toBe(true);
+    }
+  });
+
+  it('measures at least ten cases inside the boundary regime', () => {
+    const regime = golden.filter(({ input }) => {
+      const features = measureColoring(input);
+      return contended(features, 0.017) && !contended(features, 0.002);
+    });
+    expect(regime.length).toBeGreaterThanOrEqual(10);
+  });
+
+  it('offers a second season exactly when a rival scores inside the tolerance', () => {
+    for (const fixture of golden) {
+      const features = measureColoring(fixture.input);
+      expect(contended(features, BOUNDARY_TOLERANCE), fixture.id)
+        .toBe(fixture.margin <= BOUNDARY_TOLERANCE);
+    }
+  });
+
+  it('counts every season actually in contention in the boundary warning', () => {
+    const contested = golden.filter(({ expected }) => expected.secondary.length > 0);
+    expect(new Set(contested.map(({ expected }) => expected.secondary.length)).size).toBeGreaterThan(1);
+    for (const fixture of contested) {
+      const boundary = resolveColoring(fixture.input).warnings.find(({ code }) => code === 'boundary')!;
+      expect(Number(boundary.message.match(/^\d+/)?.[0]), fixture.id)
+        .toBe(fixture.expected.secondary.length + 1);
     }
   });
 
@@ -133,7 +162,7 @@ it('labels confidence with whichever of the two limits actually bound it', () =>
   expect(unsure.confidence.value).toBe(0.01);
 });
 
-it('ranks near-face colors by CIEDE2000 distance without using display roles', () => {
+it('ranks near-face colors by descending CIEDE2000 distance without using display roles', () => {
   const season = structuredClone(colorSeasons[0]!);
   const skin = season.palette.find(({ nearFace }) => nearFace)!.lab;
   const distance = differenceCiede2000();
@@ -141,7 +170,7 @@ it('ranks near-face colors by CIEDE2000 distance without using display roles', (
   const nearFace = ranked.filter((entry) => entry.nearFace);
   expect(ranked.slice(0, nearFace.length).every((entry) => entry.nearFace)).toBe(true);
   expect(nearFace.map((entry) => distance(skin, entry.lab))).toEqual(
-    [...nearFace].map((entry) => distance(skin, entry.lab)).sort((a, b) => a - b),
+    [...nearFace].map((entry) => distance(skin, entry.lab)).sort((a, b) => b - a),
   );
   const before = ranked.map(({ lab }) => lab);
   for (const entry of season.palette) {
