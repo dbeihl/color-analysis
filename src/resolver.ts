@@ -30,8 +30,6 @@ const oklab = converter('oklab');
 const swatchDistance = differenceCiede2000();
 export const BOUNDARY_TOLERANCE = 0.005;
 const LOW_CONFIDENCE = 0.25;
-const HUE_AGREEMENT = 0.005;
-const CHROMA_AGREEMENT = 0.01;
 const paletteOklab = new Map(colorSeasons.map((season) => [
   season.id,
   season.palette.map(({ lab }) => oklab(lab)),
@@ -50,29 +48,13 @@ function itaDegrees({ l, b }: Lab) {
   return Math.atan2(l - 50, b) * 180 / Math.PI;
 }
 
-function hueAngleDegrees({ a, b }: Pick<Lab, 'a' | 'b'>) {
+function hueAngleDegrees({ a, b }: Lab) {
   return (Math.atan2(b, a) * 180 / Math.PI + 360) % 360;
 }
 
-function chroma({ a, b }: Pick<Lab, 'a' | 'b'>) {
+function chroma({ a, b }: Lab) {
   return Math.hypot(a, b);
 }
-
-function hueSeparationDegrees(left: number, right: number) {
-  return 180 - Math.abs(Math.abs(left - right) - 180);
-}
-
-function meanHueAngleDegrees(labs: Lab[]) {
-  return hueAngleDegrees(labs.reduce((sum, lab) => ({
-    a: sum.a + lab.a / chroma(lab),
-    b: sum.b + lab.b / chroma(lab),
-  }), { a: 0, b: 0 }));
-}
-
-const paletteAgreement = new Map(colorSeasons.map(({ id, palette }) => [id, {
-  hueAngleDegrees: meanHueAngleDegrees(palette.map(({ lab }) => lab)),
-  meanChroma: palette.reduce((sum, { lab }) => sum + chroma(lab), 0) / palette.length,
-}]));
 
 export function measureColoring(input: unknown): ColoringFeatures {
   const normalized = coloringInputSchema.parse(input) as ColoringInput;
@@ -101,15 +83,11 @@ function oklabDistance(left: Oklab, right: Oklab) {
   return Math.hypot(left.l - right.l, left.a - right.a, left.b - right.b);
 }
 
-function seasonScore(features: ColoringFeatures, samples: Oklab[], season: ColorSeason) {
+function seasonScore(samples: Oklab[], season: ColorSeason) {
   const swatches = paletteOklab.get(season.id)!;
-  const agreement = paletteAgreement.get(season.id)!;
-  const nearest = samples.reduce((total, sample) => total + Math.min(
+  return samples.reduce((total, sample) => total + Math.min(
     ...swatches.map((swatch) => oklabDistance(sample, swatch)),
   ), 0) / samples.length;
-  const hueDisagreement = hueSeparationDegrees(features.undertone.hueAngleDegrees, agreement.hueAngleDegrees) / 180;
-  const chromaDisagreement = Math.abs(features.meanChroma - agreement.meanChroma) / 100;
-  return nearest + HUE_AGREEMENT * hueDisagreement + CHROMA_AGREEMENT * chromaDisagreement;
 }
 
 export function classifyColorSeason(
@@ -118,7 +96,7 @@ export function classifyColorSeason(
 ): Pick<StyleProfile, 'colorSeason' | 'warnings'> {
   const samples = Object.values(features.samples).map((sample) => oklab(sample));
   const ranked = colorSeasons
-    .map((season) => ({ season, score: seasonScore(features, samples, season) }))
+    .map((season) => ({ season, score: seasonScore(samples, season) }))
     .sort((a, b) => a.score - b.score);
   const [primary, runnerUp] = ranked;
   if (!primary || !runnerUp) throw new Error('At least two color-season palettes are required');
@@ -134,7 +112,7 @@ export function classifyColorSeason(
   if (secondary.length > 0) {
     warnings.push({
       code: 'boundary',
-      message: `${secondary.length + 1} seasons are within the comparison tolerance; use the blind comparison to choose.`,
+      message: `${contenders.length + 1} seasons are within the comparison tolerance; use the blind comparison to choose.`,
     });
   }
   if (contradicted) {

@@ -1,7 +1,7 @@
 # Resolver decisions
 
 `src/resolver.ts` turns one manual entry into a colour season, a ranked palette and a set of warnings.
-It scores the person against every committed palette with nearest-swatch OKLab Euclidean distance plus two palette-agreement terms, then ranks the winning palette against the skin sample with CIEDE2000.
+It scores the person against every committed palette with nearest-swatch OKLab Euclidean distance, then ranks the winning palette against the skin sample with CIEDE2000.
 Nothing here estimates accuracy. No threshold below was fitted against labelled people, because no dataset is available to this project to check itself against (`DECISIONS.md`, decision 1).
 
 ## Chosen thresholds
@@ -13,26 +13,52 @@ Realistic manual entries produce margins between roughly 0.000 and 0.035, so thi
 
 `LOW_CONFIDENCE = 0.25` is where a reported confidence starts carrying the warning that the result is a suggestion.
 
-`HUE_AGREEMENT = 0.005` and `CHROMA_AGREEMENT = 0.01` weight the two palette-agreement terms described below.
-Both were chosen as the largest values that leave all twelve seasons reachable across the 3,300 combinations of Monk skin swatch, natural hair colour and iris colour that generated the fixtures.
-
 `contrastLevel` cuts the skin-to-hair value contrast at 20 and 40 CIELAB lightness units.
 
 The ITA depth bands keep the conventional cuts at 55, 41, 28, 10 and -30 degrees.
 
 ## Season scoring
 
-A season's score is the mean OKLab distance from each of the three samples to its nearest swatch in that palette, plus two terms measuring how far the person sits from statistics derived from the palette itself.
-The first is the separation between the measured skin undertone hue angle and the palette's circular mean hue angle, as a fraction of the 180 degrees that is the largest separation possible.
-The second is the gap between the person's mean sample chroma and the palette's mean swatch chroma, as a fraction of 100 CIELAB chroma units.
-The declared axes in `seasons.json` are not consulted, and a test pins that by zeroing them and asserting the classification does not move.
+A season's score is the mean OKLab distance from each of the three samples to its nearest swatch in that palette.
+Nothing else enters it. The declared axes in `seasons.json` are not consulted, and a test pins that by zeroing them and asserting the classification does not move.
 
-The nearest-swatch term alone put a season the winner does not declare as a neighbour inside the tolerance for 12 of the 36 fixtures and 44.2 percent of the 3,300 combinations, because twelve palettes of 48 swatches cover CIELAB densely enough that every palette holds something close to any sample.
-Adding the two agreement terms lowers that to 9 of 36 and 41.5 percent. It does not improve `low-confidence`, which stayed at 32 of 36 against a baseline of 31 and moved from 91.7 to 91.1 percent across the combinations.
+That metric leaves a season the winner does not declare as a neighbour inside the tolerance for 12 of the 36 fixtures and 44.2 percent of the 3,300 combinations of Monk skin swatch, natural hair colour and iris colour that generated them, and it reports `low-confidence` for 31 of 36.
+Twelve palettes of 48 swatches cover CIELAB densely enough that every palette holds something close to any sample, so the scores bunch.
 
-That is a real but small gain, and it is worth recording why the ceiling is where it is.
-Human skin occupies a narrow hue band: across those 3,300 combinations the measured undertone hue angle spans 48.8 to 89.1 degrees, while palette mean hue angles span 54.6 to 311.6 degrees, so the hue term is close to a fixed per-season offset rather than a discriminator between people.
-`low-confidence` is bounded by a different thing again, because the reported confidence is a margin divided by the runner-up's absolute score, and the agreement terms raise that denominator by roughly as much as they widen the margin.
+### Palette-agreement terms, evaluated and rejected
+
+An earlier revision added two terms measuring how far the person sits from statistics derived from each palette: the separation between the measured skin undertone hue angle and the palette's circular mean hue angle, and the gap between the person's mean sample chroma and the palette's mean swatch chroma.
+Three variants were then measured against that shipped version on the 36 fixtures, with the unselected 3,300-combination grid alongside as a check that the fixtures were not driving the answer.
+Every variant reached all twelve seasons.
+
+| variant | conflicting-signals | low-confidence | boundary | family split S/Su/A/W |
+| --- | --- | --- | --- | --- |
+| shipped: raw hue angle plus chroma | 9/36 | 32/36 | 15/36 | 10/7/11/8 |
+| V1: normalized-position hue plus chroma | 10/36 | 29/36 | 12/36 | 9/10/9/8 |
+| V2: no agreement terms, nearest swatch only | 12/36 | 31/36 | 12/36 | 9/9/9/9 |
+| V3: chroma agreement alone | 12/36 | 31/36 | 14/36 | 9/11/9/7 |
+
+| variant, 3,300-combination grid | conflicting-signals | low-confidence | family split S/Su/A/W |
+| --- | --- | --- | --- |
+| shipped: raw hue angle plus chroma | 41.5% | 91.1% | 32.3/8.7/50.8/8.2 |
+| V1: normalized-position hue plus chroma | 42.6% | 92.5% | 24.1/20.2/45.8/10.0 |
+| V2: no agreement terms, nearest swatch only | 44.2% | 91.7% | 37.9/14.5/37.6/10.1 |
+| V3: chroma agreement alone | 43.0% | 92.1% | 26.7/16.9/46.2/10.2 |
+
+V1 places the person inside the observed human undertone range of 48.8 to 89.1 degrees and each palette inside the observed palette mean-hue range of 54.6 to 311.6 degrees, then compares those two positions directly, with no correction applied to either.
+
+None of the three meaningfully separates the seasons.
+Across all four rows the whole spread is three cases of 36 on `conflicting-signals`, three on `low-confidence`, and under three percentage points on either metric across the grid, which is the size of the difference one fixture makes.
+Whichever variant leads on one measure trails on another, and no variant leads on both sets.
+
+V2 was chosen, so both terms are gone and the score is nearest-swatch distance alone.
+The reason is not that V2 won on the numbers, because nothing won: it is that both agreement terms move answers without earning it.
+Human skin occupies a narrow hue band, 48.8 to 89.1 degrees, while palette mean hues span 54.6 to 311.6, so the hue term is a per-season constant with a small person-driven swing on top; the same holds for chroma, because a person's mean sample chroma sits below every palette's mean swatch chroma, making the term a ranking of palettes by chroma rather than a measurement of the person.
+The shipped raw-hue version reassigned the seasonal family of four of the 36 fixtures on that basis.
+A term that changes the answer for a reason unrelated to the person, and buys nothing measurable, is worse than no term.
+
+The grid family splits are worth reading as their own finding: the nearest-swatch metric assigns autumn to 37.6 percent of combinations and summer to 14.5 percent, so the family imbalance belongs to the distance metric and the palettes rather than to anything that was added or removed here.
+`low-confidence` has a separate ceiling, because the reported confidence is a margin divided by the runner-up's absolute score, and any term that widens the margin raises that denominator by about as much.
 
 ## The uncertainty contract
 
@@ -41,6 +67,10 @@ Seasons that score equally are all listed rather than resolved by name order.
 
 A season within the tolerance that the winner does not declare as a neighbour is a contradiction between the score ranking and the declared adjacency ring, so it is never offered for comparison.
 It instead sets the reported confidence to zero and raises `conflicting-signals`, because a margin over a season that should not be close carries no information about how sure the answer is.
+
+The `boundary` warning counts every season inside the tolerance, neighbours and non-neighbours alike, because its sentence claims to describe everything that close.
+Only the neighbours are offered for comparison, and `conflicting-signals` remains the separate warning that says a non-adjacent season is among them.
+A test recomputes the contender count from `seasons.json` independently of the classifier and asserts the emitted number matches; counting only the neighbours, which is what an earlier revision did, fails it with `monk-2-dark-red-brown: expected 2 to be 3`, and overcounting by one fails it as well.
 
 `confidence.basis` names whichever of the two limits actually bound the value: `relative-score-margin` for the gap between the top two palettes, and `self-reported-input-confidence` for the certainty the person entered about their own colour readings.
 Neither is a calibrated probability that the season is correct.
