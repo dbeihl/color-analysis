@@ -22,7 +22,7 @@ The ITA depth bands keep the conventional cuts at 55, 41, 28, 10 and -30 degrees
 A season's score is the mean OKLab distance from each of the three samples to its nearest swatch in that palette.
 Nothing else enters it. The declared axes in `seasons.json` are not consulted, and a test pins that by zeroing them and asserting the classification does not move.
 
-That metric leaves a season the winner does not declare as a neighbour inside the tolerance for 12 of the 36 fixtures and 44.2 percent of the 3,300 combinations of Monk skin swatch, natural hair colour and iris colour that generated them, and it reports `low-confidence` for 31 of 36.
+That metric leaves a season the winner does not declare as a neighbour inside the tolerance for 12 of the 36 fixtures, and it reports `low-confidence` for 31 of 36.
 Twelve palettes of 48 swatches cover CIELAB densely enough that every palette holds something close to any sample, so the scores bunch.
 Put plainly: for mid-lightness colouring the classifier on its own barely tells the seasons apart, and version one hands that honest uncertainty to the blind comparison test by design, because a person's own eyes beside their own face are the instrument this tool trusts to settle it.
 
@@ -34,7 +34,7 @@ One row survives as evidence, because its scorer is the one in the tree and its 
 
 | variant | conflicting-signals | low-confidence | boundary | family split S/Su/A/W |
 | --- | --- | --- | --- | --- |
-| no agreement terms, nearest swatch only (shipped) | 12/36 | 31/36 | 12/36 | 9/9/9/9 |
+| no agreement terms, nearest swatch only (shipped) | 12/36 | 31/36 | 17/36 | 9/9/9/9 |
 
 The other rows have been removed rather than repeated.
 Those alternative scorers were never committed and the grid had no committed generator, so every number measured against them is a one-time development measurement that was not preserved.
@@ -56,11 +56,14 @@ Seasons that score equally are all listed rather than resolved by name order.
 A season within the tolerance that the winner does not declare as a neighbour is a contradiction between the score ranking and the declared adjacency ring, so it is never offered for comparison.
 It instead sets the reported confidence to zero and raises `conflicting-signals`, because a margin over a season that should not be close carries no information about how sure the answer is.
 
-The `boundary` warning makes two separate statements rather than one that overreaches.
+The `boundary` warning fires whenever any season at all scores inside the tolerance of the winner, whether or not the winner declares it a neighbour, because how close the field is remains true and worth telling regardless of what can be offered.
+It makes two separate statements rather than one that overreaches.
 It counts every season inside the tolerance, neighbours and non-neighbours alike, and then names the seasons the blind comparison will actually put in front of the person, which is the winner plus its declared neighbours.
 When those two counts differ, the difference is exactly the non-adjacent contenders, and `conflicting-signals` is the warning that explains them.
+When no season inside the tolerance is a declared neighbour, the second statement says so plainly and that nothing is offered for comparison.
 A test recomputes the contender count from `seasons.json` independently of the classifier, asserts the emitted count and the offered list against it, and requires the fixtures to exercise both the equal-count and the differing-count wording.
-Counting only the neighbours, which is what an earlier revision did, fails it with `monk-2-dark-red-brown: expected '2 seasons are within the comparison t…' to contain '3 seasons are within the comparison t…'`, and offering every contender rather than the neighbours fails it as well.
+A second test pins the no-neighbour wording exactly, and a third asserts the warning is present for exactly the fixtures with a rival inside the tolerance.
+Three mutations were run against them: counting only the neighbours fails the count assertion, gating the warning on a neighbour existing fails with `monk-3-chestnut-vivid-blue: expected [ 'conflicting-signals', …(1) ] to deeply equal [ 'boundary', …(2) ]`, and claiming the no-neighbour case offers the rivals fails the wording pin.
 
 `confidence.basis` names what actually determined the value: `relative-score-margin` for the gap between the top two palettes, `self-reported-input-confidence` for the certainty the person entered about their own colour readings, and `contradicted-adjacency` when a non-adjacent contender forced the value to zero regardless of either of those.
 Neither is a calibrated probability that the season is correct.

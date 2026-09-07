@@ -110,13 +110,16 @@ export function classifyColorSeason(
   const value = Math.min(marginRatio, features.inputConfidence);
   const offered = [primary.season.id, ...secondary];
   const withinTolerance = contenders.length + 1;
+  const offer = secondary.length === 0
+    ? `None of the rivals is a declared neighbour of ${primary.season.id}, so the blind comparison offers none of them.`
+    : `The blind comparison offers ${
+      withinTolerance === offered.length ? `all ${withinTolerance}` : `${offered.length} of them`
+    }: ${offered.join(', ')}.`;
   const warnings: StyleProfile['warnings'] = [];
-  if (secondary.length > 0) {
+  if (contenders.length > 0) {
     warnings.push({
       code: 'boundary',
-      message: `${withinTolerance} seasons are within the comparison tolerance. The blind comparison offers ${
-        withinTolerance === offered.length ? `all ${withinTolerance}` : `${offered.length} of them`
-      }: ${offered.join(', ')}.`,
+      message: `${withinTolerance} seasons are within the comparison tolerance. ${offer}`,
     });
   }
   if (contradicted) {
