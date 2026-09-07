@@ -91,7 +91,7 @@ Light regions use high values, deep regions low values, soft regions low chroma 
 The midrange True Spring and True Summer regions sit above True Autumn and True Winter in value so their palettes remain distinct.
 The core regions are joined by the support regions below; every support swatch retains the same value interval as its colour season.
 Each colour season serialises this core as `coreRegion`, which describes the core hue families and core chroma rather than the full extent of the palette beside it.
-The metal and denim support roles are drawn from outside it deliberately, and the base neutrals and secondary neutrals sit below its chroma floor, so `coreRegion` must not be read as the set of every swatch a colour season carries.
+The metal and denim support roles are drawn from outside it deliberately, and the base neutrals and secondary neutrals sit at or below its chroma floor, so `coreRegion` must not be read as the set of every swatch a colour season carries.
 These deliberately overlapping regions support comparison across boundaries rather than claiming twelve disjoint natural classes.
 
 ## Open limitation: soft and light share a chroma ladder
@@ -104,7 +104,8 @@ Whether the twelve colour seasons should be separated by chroma at all, or by va
 
 The metal role has the same shape of limitation.
 It currently draws from a strict subset of the base-neutral pool, at the same chroma and within the same value interval, so the metal label records a naming convention rather than a colorimetric distinction that the data supports.
-Whether metal should get its own separable band is part of this same open decision, and it is left unanswered here for the same reason.
+Denim carries the same limitation in the six cool colour seasons, where it draws from a strict subset of the secondary-neutral pool at the same chroma and within the same value interval, so the claim that denim is an explicit blue support region holds for the warm colour seasons only.
+Whether metal and denim should get their own separable bands is part of this same open decision, and it is left unanswered here for the same reason.
 
 ## Sampling and roles
 

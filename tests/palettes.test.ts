@@ -54,6 +54,21 @@ function assertDisjointSupportRoles(entries: ColorSeason[]) {
 
 const CORE_REGION_SUPPORT_ROLES: PaletteEntry['role'][] = ['denim', 'metal'];
 
+const BELOW_CORE_CHROMA_ROLES: PaletteEntry['role'][] = ['base-neutral', 'secondary-neutral'];
+
+function assertCoreChromaContainment(entries: ColorSeason[]) {
+  for (const entry of entries) {
+    const [low, high] = entry.coreRegion.chroma;
+    for (const swatch of entry.palette) {
+      if (CORE_REGION_SUPPORT_ROLES.includes(swatch.role)) continue;
+      if (BELOW_CORE_CHROMA_ROLES.includes(swatch.role)) continue;
+      const label = `${entry.id}: ${swatch.name} (${swatch.role}) sits outside coreRegion chroma [${low}, ${high}]`;
+      expect(swatch.munsell.chroma, label).toBeGreaterThanOrEqual(low);
+      expect(swatch.munsell.chroma, label).toBeLessThanOrEqual(high);
+    }
+  }
+}
+
 function assertCoreHueContainment(entries: ColorSeason[]) {
   for (const entry of entries) {
     for (const swatch of entry.palette) {
@@ -150,6 +165,17 @@ it('detects secondary neutrals drawn from the accent chroma pool', () => {
 
 it('keeps every swatch except the declared support roles inside its core hue families', () => {
   assertCoreHueContainment(colorSeasons);
+});
+
+it('keeps every accent and statement inside its core chroma interval', () => {
+  assertCoreChromaContainment(colorSeasons);
+});
+
+it('detects an accent drawn from outside the core chroma interval', () => {
+  const changed = structuredClone(colorSeasons);
+  const entry = changed[0]!;
+  entry.palette.find((swatch) => swatch.role === 'accent')!.munsell.chroma = entry.coreRegion.chroma[1] + 2;
+  expect(() => assertCoreChromaContainment(changed)).toThrow();
 });
 
 it('detects an accent drawn from outside the core hue families', () => {
