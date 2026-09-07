@@ -194,6 +194,16 @@ it('ranks near-face colors by descending CIEDE2000 distance without using displa
   expect(rankPalette(skin, season).map(({ lab }) => lab)).toEqual(before);
 });
 
+it('leaves every non-near-face swatch in committed palette order', () => {
+  const season = colorSeasons[0]!;
+  const committed = season.palette.filter(({ nearFace }) => !nearFace).map(({ name }) => name);
+  expect(committed.length).toBeGreaterThan(1);
+  for (const skin of [season.palette[0]!.lab, { mode: 'lab65' as const, l: 20, a: 30, b: -10 }]) {
+    expect(rankPalette(skin, season).filter(({ nearFace }) => !nearFace).map(({ name }) => name))
+      .toEqual(committed);
+  }
+});
+
 it('hands back palette entries a caller cannot use to corrupt the knowledge base', () => {
   const season = colorSeasons[0]!;
   const entry = rankPalette(season.palette[0]!.lab, season)[0]!;

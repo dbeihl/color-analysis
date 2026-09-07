@@ -142,11 +142,11 @@ export function classifyColorSeason(
 }
 
 export function rankPalette(skin: Lab, season: ColorSeason): PaletteEntry[] {
-  return structuredClone(season.palette).sort((a, b) =>
-    Number(b.nearFace) - Number(a.nearFace)
-      || swatchDistance(skin, b.lab) - swatchDistance(skin, a.lab)
-      || a.name.localeCompare(b.name),
+  const entries = structuredClone(season.palette);
+  const nearFace = entries.filter(({ nearFace: near }) => near).sort((a, b) =>
+    swatchDistance(skin, b.lab) - swatchDistance(skin, a.lab) || a.name.localeCompare(b.name),
   );
+  return [...nearFace, ...entries.filter(({ nearFace: near }) => !near)];
 }
 
 export function resolveColoring(input: unknown): StyleProfile {
