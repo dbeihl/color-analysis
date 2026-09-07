@@ -62,6 +62,14 @@ Superseded text: the build prompt says "No image leaves the device by default," 
 
 Correction: both sentences are superseded. A sync tier is the precise event that would forfeit the legal position, because it turned on possession rather than on-device processing.
 
+### 7. Deployment target
+
+Superseded text: the addendum's GitHub Pages deployment guidance, including its base-path instruction, its `404.html` routing workaround, its public-repository assumption, and its advice on avoiding the need for cross-origin isolation.
+
+Correction: version one hosts on Cloudflare Pages from the private repository, per `DECISIONS.md` entry 5.
+The site base path is the domain root, ordinary SPA routing works because the host supports rewrites, and cross-origin isolation is available without a service-worker hack.
+This decision is provisional pending the captain's confirmation; see `DECISIONS.md` entry 5 for the caveat.
+
 ## What was checked in the research, and what did not survive
 
 - Eleven of thirteen citations were verified at source, including the accuracy figure, the calibration paper's quality-gate threshold, the capsule-wardrobe paper's submodularity claim, and the appellate ruling's own words verbatim.

@@ -56,23 +56,33 @@ Version one drives makeup off the Western season and accepts coarser matching fo
 
 Forecloses: nothing permanently.
 
-## 5. OPEN — the captain's call, not yet made: repository visibility and where version one is hosted
+## 5. Repository stays private, version one hosts on Cloudflare Pages
 
-Free GitHub Pages hosting requires a public repository.
-The repository is private today.
-The captain said deliberately that it should be private.
-Turning a private repository public exposes its whole history in a way that making it private again does not undo.
+Decided by: the captain, relayed.
+Date: 2026-09-07.
+His words (relayed): "about the color repository, that is fine."
+The choice of host itself was delegated to the fleet, which chose Cloudflare Pages.
 
-Options on the table:
+Reasoning: free GitHub Pages hosting requires a public repository.
+The captain wants it private, and turning a private repository public exposes its whole history in a way that making it private again does not undo.
+So GitHub Pages is out.
+Both Cloudflare Pages and Netlify build private repositories free and can set response headers from a `_headers` file, which GitHub Pages cannot.
+That removes the cross-origin-isolation ceiling, so multi-threaded WebAssembly stays available for the deferred photo work instead of needing a service-worker hack.
+Treat that as a requirement rather than a nicety; it was the captain's stated reason for preferring a different host.
+Cloudflare Pages is chosen over Netlify because its free tier does not meter bandwidth or requests, while Netlify's free tier caps at 100 GB per month, the same soft ceiling GitHub Pages imposed.
+Moving host to escape a ceiling and then adopting the same ceiling would be self-defeating, and the deferred photo work ships several megabytes of model assets on first visit.
 
-- keep it private and pay for hosting
-- keep it private and host free elsewhere, such as Cloudflare Pages or Netlify, which can also send response headers GitHub Pages cannot, removing a known ceiling later
-- keep it private with no hosting yet and run it locally
-- make it public on free GitHub hosting
+Known ceilings of Cloudflare Pages' free tier, verified against the published limits on 2026-09-07: 25 MiB per individual asset, 20,000 files per site, 500 builds per month, one custom domain, 20 minute build timeout.
 
-Nothing is being designed around this while it stands open.
-What waits on it, specifically: the deployment workflow, the site base path in the build configuration, and the routing choice between a hash router and a copied `404.html`.
-Everything else in version one proceeds.
+Consequences now settled: the site base path is the domain root rather than a repository subpath.
+Ordinary SPA routing works because the host supports rewrites, so no hash router and no copied `404.html` is needed.
+Cross-origin isolation is available if the photo work ever needs threads.
+
+No deployment configuration, `_headers` file, or build config is created in this task. That is build work for the next task.
+
+**Provisional, pending the captain's confirmation.** Earlier the same day he had selected the public GitHub Pages option on a decision board, the opposite of what is recorded here, and the fleet did not know that when it relayed the private reading above.
+Work proceeds on private plus Cloudflare because that is the current explicit instruction and because private is the recoverable direction.
+If he confirms public instead, the host reverts to GitHub Pages and the base path becomes a repository subpath.
 
 ## Settled by the research, not open to reinterpretation
 
