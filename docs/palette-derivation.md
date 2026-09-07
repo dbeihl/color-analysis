@@ -15,6 +15,8 @@ Python is used only for offline generation and provenance tests; the application
 npm ci
 python3 -m venv .venv
 .venv/bin/pip install -r scripts/requirements.txt
+.venv/bin/ruff check scripts/
+.venv/bin/mypy
 npm run derive
 npm run derive:check
 npm test
@@ -152,7 +154,7 @@ The family restriction accounts for the different Lab chroma scales reached by d
 Warmth is the mean circular projection `cos(h - 60 degrees)` of the CIELCh D65 hue angle, so 360-degree wraparound cannot corrupt an arithmetic mean of angles.
 Every palette's projected warmth must have the sign of its declared hue axis, putting positive-axis palettes on the warm side of negative-axis palettes.
 This projection and its 60-degree pole are explicit audit heuristics, not skin-undertone measurements.
-Substitution controls prove the axis checks reject palettes whose colours contradict their metadata.
+Substitution controls prove the value and chroma checks reject palettes whose colours contradict their metadata, and a separate control that swaps the Light Spring and Light Summer palettes proves the warmth check does too.
 Further tests assert that every swatch falls inside its `coreRegion` on hue family, on chroma and on value.
 The value interval admits no exceptions, because every role including the support roles is sampled from its colour season's value interval; the hue and chroma checks name four exempt roles between them and have no general escape hatch.
 Denim and metal are the named hue exceptions, because they are drawn as support regions from outside the core families, and the chroma check exempts them as well, because their fixed chroma of 2 for metal and 4 for denim sits at or below every core chroma floor.
