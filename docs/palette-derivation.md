@@ -1,0 +1,139 @@
+# Palette derivation
+
+These are original samples of declared Munsell regions, intended as a starting point for manual colour comparison.
+The numeric source describes colours; it does not validate twelve personal colour categories or the suitability of a colour for a particular person.
+The regions, axis positions, garment roles, neighbour relationships and near-face flags are project heuristics that can be challenged and retuned.
+No commercial analyst's palette was sampled, digitised or used as a target.
+
+## Reproduce and validate
+
+Use Node 22.12 or newer and Python 3.11 through 3.13.
+Python is used only for offline generation and provenance tests; the application loads committed JSON and never runs Python.
+
+```sh
+npm ci
+python3 -m venv .venv
+.venv/bin/pip install -r scripts/requirements.txt
+npm run derive
+npm run derive:check
+npm test
+npm run build
+```
+
+`npm test` generates the entire file twice, compares the bytes with the committed file and proves that an edited colour fails the reproduction check.
+It also validates knowledge loading, checks palette statistics and prints the nonblocking neutral-pairing report.
+`npm run derive:check` exits nonzero if any output differs, including provenance, roles, ordering or colour coordinates.
+Generation is offline after dependency installation, has no random seed or timestamp, and writes UTF-8 JSON with LF line endings and six decimal places for CIELAB channels.
+`--output PATH` writes or checks a separate file for experiments without overwriting the committed palette.
+
+## Source and licence
+
+The source is the base [RIT Munsell renotation data](https://www.rit.edu/science/munsell-color-science-lab-educational-resources), using its real-colour subset as distributed in [Colour 0.4.6](https://github.com/colour-science/colour/blob/v0.4.6/colour/notation/datasets/munsell/real.py).
+The unmodified distribution is vendored at `scripts/data/real.py` and contains 2,734 rows of Munsell hue, value, chroma and CIE xyY coordinates.
+The script checks SHA-256 `e3656c76f164d6e124d2c56a8449274ac3605390862066a5ab12a46a9cfdde1e` before reading it.
+The distributor identifies this module as BSD-3-Clause; the full copyright, conditions and disclaimer are retained in [the bundled licence](../public/third-party/colour-LICENSE.txt).
+Vite copies that licence into the built site at `third-party/colour-LICENSE.txt` so the generated distribution retains the notice too.
+
+This project uses the original renotation, with its known limitations.
+It does not use IEEE DataPort's Munsell Re-renotation: Revised, the `mrr-revised` repository, or their NonCommercial data.
+Reproduction does not download a replacement dataset from a moving URL.
+
+## Colour coordinates and metrics
+
+The source module documents Illuminant C and a 0.975 luminance correction for direct use of these xyY records.
+The generator multiplies the source Y by `0.975 / 100`, giving relative luminance against a perfect reflecting diffuser.
+It uses Colour's `xyY_to_XYZ` and `chromatic_adaptation_VonKries(..., transform="Bradford")` to prepare XYZ under D65, using the CIE 1931 2-degree observer for both white points.
+This is the offline source-import step: Culori's built-in XYZ modes cover D50 and D65, so Colour supplies the library implementation of the Illuminant C adaptation.
+No conversion or chromatic-adaptation matrix is handwritten in this project.
+
+`scripts/convert-munsell.mjs` then uses [Culori](https://culorijs.org/color-spaces/) to convert D65 XYZ to `lab65` and sRGB.
+Every stored Lab value explicitly includes `mode: "lab65"`; Culori's plain `lab` mode means D50 and must not be substituted.
+Samples outside sRGB after rounding are discarded, with no clipping, gamut mapping or invented replacements.
+Only the Lab value is stored as the application colour; Munsell notation stays beside it as provenance and as its precise name.
+Hex may be computed later at render time.
+
+The next phase uses OKLab Euclidean distance for coarse person-to-colour-season scoring and CIEDE2000 for fine swatch-to-swatch matching.
+Those metrics have different purposes and are not interchangeable.
+This phase contains no classifier or palette resolver.
+The audit's mean CIELAB lightness, mean CIELCh D65 chroma and circular hue projection describe palette distributions; none estimates classification accuracy.
+`tests/fixtures/colour-reference.json` pins three source rows converted independently using Colour's XYZ-to-Lab implementation, covering a warm light sample, a blue sample and a high-chroma red-purple sample.
+The Culori output must agree with these references to four decimal places.
+
+## Declared regions
+
+All intervals include their endpoints.
+Each listed hue family includes its dataset steps 2.5, 5, 7.5 and 10.
+Warm regions span R, YR, Y and GY; stronger warm regions concentrate on YR, Y and GY.
+Cool regions span BG, B, PB, P and RP; stronger cool regions concentrate on B, PB and P.
+These choices give each family a direction in hue space while allowing boundary overlap.
+The continuous axis positions express qualitative design intent on [-1, 1]; they are not fitted measurements of people.
+Value increases toward lightness, chroma increases toward saturation, and hue increases toward warmth.
+
+| Colour season | Dominant | Axes: hue, value, chroma | Core hue families | Munsell value | Core chroma |
+|---|---|---|---|---|---|
+| Light Spring | value | 0.5, 0.7, -0.2 | R, YR, Y, GY | 7–9 | 6–8 |
+| True Spring | hue | 1, 0.3, 0.3 | YR, Y, GY | 5–7 | 6–10 |
+| Bright Spring | chroma | 0.5, 0, 0.8 | R, YR, Y, GY | 4–6 | 10–16 |
+| Light Summer | value | -0.5, 0.7, -0.2 | BG, B, PB, P, RP | 7–9 | 6–8 |
+| True Summer | hue | -1, 0.3, 0.3 | B, PB, P | 5–7 | 6–10 |
+| Soft Summer | chroma | -0.5, 0, -0.7 | BG, B, PB, P, RP | 4–6 | 4–6 |
+| Soft Autumn | chroma | 0.5, 0, -0.7 | R, YR, Y, GY | 4–6 | 4–6 |
+| True Autumn | hue | 1, 0, 0.3 | YR, Y, GY | 4–6 | 6–10 |
+| Deep Autumn | value | 0.5, -0.7, 0.3 | R, YR, Y, GY | 2–4 | 6–10 |
+| Deep Winter | value | -0.5, -0.7, 0.3 | BG, B, PB, P, RP | 2–4 | 6–10 |
+| True Winter | hue | -1, -0.3, 0.3 | B, PB, P | 3–5 | 6–10 |
+| Bright Winter | chroma | -0.5, 0, 0.8 | BG, B, PB, P, RP | 4–6 | 10–16 |
+
+Light regions use high values, deep regions low values, soft regions low chroma and bright regions high chroma.
+The midrange True Spring and True Summer regions sit above True Autumn and True Winter in value so their palettes remain distinct.
+The core regions are joined by the support regions below; every support swatch retains the same value interval as its colour season.
+These deliberately overlapping regions support comparison across boundaries rather than claiming twelve disjoint natural classes.
+
+## Sampling and roles
+
+The generator takes 48 distinct dataset rows per colour season.
+It sorts eligible rows by hue-circle position (R, YR, Y, GY, G, BG, B, PB, P, RP), then value, then chroma.
+For a role requiring n rows from N candidates it takes index `floor(i * (N - 1) / (n - 1))` for i from 0 through n - 1.
+This spreads samples through the eligible rows without matching a published palette or optimising against a desired test result.
+Already selected rows are excluded from later roles, and generation throws if a role lacks enough candidates.
+
+| Assignment order | Role | Count | Region within the value interval |
+|---|---|---|---|
+| 1 | metal | 2 | YR/Y for positive hue; B/PB for negative hue; chroma 2 |
+| 2 | denim | 2 | B/PB; chroma 4 |
+| 3 | base-neutral | 8 | Core hue families; chroma 2 |
+| 4 | secondary-neutral | 4 | Core hue families; chroma 4 |
+| 5 | accent | 24 | Core hue families; chroma 4 for soft, 6 for light, 6–8 for true/deep, 10–12 for bright |
+| 6 | statement | 8 | Core hue families; chroma 6 for soft, 8 for light, 10 for true/deep, 14–16 for bright |
+
+A metal entry is a flat colour approximation; a Lab triple cannot model gloss, reflectance geometry or a metallic finish.
+Denim is an explicit blue support region even for warm palettes.
+A neutral here means a low-Munsell-chroma support colour, which can still have a visible tint.
+Accents and secondary neutrals have `nearFace: true` as a starting styling suggestion; other roles default to false.
+No flag claims a measured effect on a face.
+The counts provide data coverage and do not prescribe wardrobe ratios.
+
+Boundary neighbours form a reciprocal ring: Light Spring, True Spring, Bright Spring, Bright Winter, True Winter, Deep Winter, Deep Autumn, True Autumn, Soft Autumn, Soft Summer, True Summer, Light Summer, then back to Light Spring.
+The ring places paired light, bright, soft and deep types beside each other and keeps each true type beside its family variants.
+It is a navigational convention for the next comparison phase, with no fitted decision thresholds.
+
+## Checks and limits
+
+Import-time Zod validation rejects malformed fields, nonfinite or out-of-gamut Lab values, missing roles, duplicate colours, missing colour seasons and invalid neighbour relationships.
+The browser entry imports the validated knowledge module before mounting its empty React root.
+Tests replace the JSON module with a deliberately malformed fixture to prove import itself rejects it.
+
+Cross-palette tests derive comparisons from the declared axes, with no list of selected pairwise examples.
+Every palette with a lower declared value must have lower mean Lab lightness than every palette with a higher value.
+Within each family, lower declared chroma must mean lower mean CIELCh D65 chroma.
+The family restriction accounts for the different Lab chroma scales reached by different Munsell hues and prevents treating Munsell chroma as a universal Lab distance.
+Warmth is the mean circular projection `cos(h - 60 degrees)` of the CIELCh D65 hue angle, so 360-degree wraparound cannot corrupt an arithmetic mean of angles.
+Every palette's projected warmth must have the sign of its declared hue axis, putting positive-axis palettes on the warm side of negative-axis palettes.
+This projection and its 60-degree pole are explicit audit heuristics, not skin-undertone measurements.
+Substitution controls prove the axis checks reject palettes whose colours contradict their metadata.
+
+The printed neutral report counts base neutrals and accents with fewer than three candidate pairings.
+For this report only, a candidate pairing means CIEDE2000 at least 10 between the accent and base neutral, as a rough distinction check.
+That threshold says nothing established about aesthetic harmony.
+Both the threshold and the three-neutral rule are folk heuristics; shortfalls print warnings and never invalidate a knowledge file or fail the suite.
+A dedicated control with zero base neutrals proves the warning is emitted without throwing.

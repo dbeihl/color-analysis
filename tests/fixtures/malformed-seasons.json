@@ -1,0 +1,13 @@
+[
+  {
+    "id": "light-spring",
+    "family": "spring",
+    "dominant": "value",
+    "axes": { "hue": 0.5, "value": 2, "chroma": -0.2 },
+    "neighbors": ["light-summer"],
+    "sources": [],
+    "palette": [
+      { "lab": { "mode": "lab65", "l": "light", "a": 4, "b": 7 } }
+    ]
+  }
+]
