@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 80
+target-version = "py311"
+extend-exclude = ["scripts/data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "D101", "D102", "D103", "D107", "ANN001"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+files = ["scripts"]
+exclude = "scripts/data/"

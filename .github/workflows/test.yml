@@ -1,0 +1,29 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22.12.0"
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: npm ci
+      - run: python -m venv .venv
+      - run: .venv/bin/pip install -r scripts/requirements.txt
+      - run: .venv/bin/ruff check scripts/
+      - run: .venv/bin/mypy
+      - run: npm test
+      - run: npm run build
