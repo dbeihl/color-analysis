@@ -4,3 +4,5 @@ scipy==1.15.3
 imageio==2.37.4
 pillow==12.3.0
 typing-extensions==4.16.0
+ruff==0.16.6
+mypy==2.3.1
