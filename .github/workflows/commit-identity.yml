@@ -1,0 +1,33 @@
+name: Commit identity guard
+
+on:
+  pull_request:
+
+jobs:
+  check-identity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check author and committer email on every commit
+        run: |
+          set -e
+          ALLOWED="51423378+dbeihl@users.noreply.github.com"
+          FAILED=0
+          for sha in $(git rev-list origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}); do
+            author_email=$(git log -1 --format='%ae' "$sha")
+            committer_email=$(git log -1 --format='%ce' "$sha")
+            if [ "$author_email" != "$ALLOWED" ]; then
+              echo "Commit $sha has author email '$author_email', expected '$ALLOWED'"
+              FAILED=1
+            fi
+            if [ "$committer_email" != "$ALLOWED" ]; then
+              echo "Commit $sha has committer email '$committer_email', expected '$ALLOWED'"
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -ne 0 ]; then
+            exit 1
+          fi
