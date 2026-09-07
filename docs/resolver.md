@@ -9,7 +9,7 @@ Nothing here estimates accuracy. No threshold below was fitted against labelled 
 Each number in this section was chosen. Each is a rule of thumb rather than a measurement, and none is derived from evidence.
 
 `BOUNDARY_TOLERANCE = 0.005` is how far behind the winner a second season may score and still be offered for comparison, in mean OKLab distance.
-Realistic manual entries produce margins between roughly 0.000 and 0.035, so this value sits inside the operating range and materially decides who is told they sit on a boundary.
+The top-two margins recorded across the 36 committed fixtures in `tests/fixtures/resolver-golden.json` run from 0.0002 to 0.021, so this value sits inside the operating range and materially decides who is told they sit on a boundary.
 
 `LOW_CONFIDENCE = 0.25` is where a reported confidence starts carrying the warning that the result is a suggestion.
 
