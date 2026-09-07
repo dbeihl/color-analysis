@@ -4,6 +4,7 @@ These are original samples of declared Munsell regions, intended as a starting p
 The numeric source describes colours; it does not validate twelve personal colour categories or the suitability of a colour for a particular person.
 The regions, axis positions, garment roles, neighbour relationships and near-face flags are project heuristics that can be challenged and retuned.
 No commercial analyst's palette was sampled, digitised or used as a target.
+Face-shape guidance is not part of this phase; it arrives with the line-and-face resolver, off by default and labelled a rule of thumb.
 
 ## Reproduce and validate
 
@@ -63,26 +64,28 @@ The Culori output must agree with these references to four decimal places.
 
 All intervals include their endpoints.
 Each listed hue family includes its dataset steps 2.5, 5, 7.5 and 10.
-Warm regions span R, YR, Y and GY; stronger warm regions concentrate on YR, Y and GY.
-Cool regions span BG, B, PB, P and RP; stronger cool regions concentrate on B, PB and P.
+Warm regions span R, YR, Y, GY and G; stronger warm regions concentrate on YR, Y, GY and G.
+Cool regions span G, BG, B, PB, P and RP; stronger cool regions concentrate on G, B, PB and P.
+Green is deliberately drawn by both spans because it is the temperature-neutral divider between them, so each colour season samples green at its own value and chroma instead of one side owning the family.
+Excluding it from both, as a strict warm/cool split would, would leave every one of the twelve palettes with no green at all.
 These choices give each family a direction in hue space while allowing boundary overlap.
 The continuous axis positions express qualitative design intent on [-1, 1]; they are not fitted measurements of people.
 Value increases toward lightness, chroma increases toward saturation, and hue increases toward warmth.
 
 | Colour season | Dominant | Axes: hue, value, chroma | Core hue families | Munsell value | Core chroma |
 |---|---|---|---|---|---|
-| Light Spring | value | 0.5, 0.7, -0.2 | R, YR, Y, GY | 7–9 | 6–8 |
-| True Spring | hue | 1, 0.3, 0.3 | YR, Y, GY | 5–7 | 6–10 |
-| Bright Spring | chroma | 0.5, 0, 0.8 | R, YR, Y, GY | 4–6 | 10–16 |
-| Light Summer | value | -0.5, 0.7, -0.2 | BG, B, PB, P, RP | 7–9 | 6–8 |
-| True Summer | hue | -1, 0.3, 0.3 | B, PB, P | 5–7 | 6–10 |
-| Soft Summer | chroma | -0.5, 0, -0.7 | BG, B, PB, P, RP | 4–6 | 4–6 |
-| Soft Autumn | chroma | 0.5, 0, -0.7 | R, YR, Y, GY | 4–6 | 4–6 |
-| True Autumn | hue | 1, 0, 0.3 | YR, Y, GY | 4–6 | 6–10 |
-| Deep Autumn | value | 0.5, -0.7, 0.3 | R, YR, Y, GY | 2–4 | 6–10 |
-| Deep Winter | value | -0.5, -0.7, 0.3 | BG, B, PB, P, RP | 2–4 | 6–10 |
-| True Winter | hue | -1, -0.3, 0.3 | B, PB, P | 3–5 | 6–10 |
-| Bright Winter | chroma | -0.5, 0, 0.8 | BG, B, PB, P, RP | 4–6 | 10–16 |
+| Light Spring | value | 0.5, 0.7, -0.2 | R, YR, Y, GY, G | 7–9 | 6–8 |
+| True Spring | hue | 1, 0.3, 0.3 | YR, Y, GY, G | 5–7 | 6–10 |
+| Bright Spring | chroma | 0.5, 0, 0.8 | R, YR, Y, GY, G | 4–6 | 10–16 |
+| Light Summer | value | -0.5, 0.7, -0.2 | G, BG, B, PB, P, RP | 7–9 | 6–8 |
+| True Summer | hue | -1, 0.3, 0.3 | G, B, PB, P | 5–7 | 6–10 |
+| Soft Summer | chroma | -0.5, 0, -0.7 | G, BG, B, PB, P, RP | 4–6 | 4–8 |
+| Soft Autumn | chroma | 0.5, 0, -0.7 | R, YR, Y, GY, G | 4–6 | 4–8 |
+| True Autumn | hue | 1, 0, 0.3 | YR, Y, GY, G | 4–6 | 6–10 |
+| Deep Autumn | value | 0.5, -0.7, 0.3 | R, YR, Y, GY, G | 2–4 | 6–10 |
+| Deep Winter | value | -0.5, -0.7, 0.3 | G, BG, B, PB, P, RP | 2–4 | 6–10 |
+| True Winter | hue | -1, -0.3, 0.3 | G, B, PB, P | 3–5 | 6–10 |
+| Bright Winter | chroma | -0.5, 0, 0.8 | G, BG, B, PB, P, RP | 4–6 | 10–16 |
 
 Light regions use high values, deep regions low values, soft regions low chroma and bright regions high chroma.
 The midrange True Spring and True Summer regions sit above True Autumn and True Winter in value so their palettes remain distinct.
@@ -103,13 +106,16 @@ Already selected rows are excluded from later roles, and generation throws if a 
 | 2 | denim | 2 | B/PB; chroma 4 |
 | 3 | base-neutral | 8 | Core hue families; chroma 2 |
 | 4 | secondary-neutral | 4 | Core hue families; chroma 4 |
-| 5 | accent | 24 | Core hue families; chroma 4 for soft, 6 for light, 6–8 for true/deep, 10–12 for bright |
-| 6 | statement | 8 | Core hue families; chroma 6 for soft, 8 for light, 10 for true/deep, 14–16 for bright |
+| 5 | accent | 24 | Core hue families; chroma 6 for soft and light, 6–8 for true/deep, 10–12 for bright |
+| 6 | statement | 8 | Core hue families; chroma 8 for soft and light, 10 for true/deep, 14–16 for bright |
 
 A metal entry is a flat colour approximation; a Lab triple cannot model gloss, reflectance geometry or a metallic finish.
 Denim is an explicit blue support region even for warm palettes.
 A neutral here means a low-Munsell-chroma support colour, which can still have a visible tint.
+Every colour season draws its secondary neutrals from a strictly lower chroma than its accents, so the two labels stay separable rather than naming whichever rows the picker consumed first.
+The soft regions have the least room for that separation, so their statements reach chroma 8 while their accents stay at 6 and their secondary neutrals at 4.
 Accents and secondary neutrals have `nearFace: true` as a starting styling suggestion; other roles default to false.
+Import-time validation rejects a knowledge file whose `nearFace` disagrees with that rule, so the flag cannot be edited away from its role.
 No flag claims a measured effect on a face.
 The counts provide data coverage and do not prescribe wardrobe ratios.
 

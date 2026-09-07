@@ -121,12 +121,14 @@ def derive(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
     output = []
     for identifier, family, dominant, hue, value, chroma in RECIPES:
         hues = (
-            ["R", "YR", "Y", "GY"] if hue > 0 else ["BG", "B", "PB", "P", "RP"]
+            ["R", "YR", "Y", "GY", "G"]
+            if hue > 0
+            else ["G", "BG", "B", "PB", "P", "RP"]
         )
         if hue == 1:
-            hues = ["YR", "Y", "GY"]
+            hues = ["YR", "Y", "GY", "G"]
         elif hue == -1:
-            hues = ["B", "PB", "P"]
+            hues = ["G", "B", "PB", "P"]
         values = {
             -0.7: [2, 4],
             -0.3: [3, 5],
@@ -134,7 +136,12 @@ def derive(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
             0.3: [5, 7],
             0.7: [7, 9],
         }[value]
-        core = {-0.7: [4, 6], -0.2: [6, 8], 0.3: [6, 10], 0.8: [10, 16]}[chroma]
+        core, accents, statements = {
+            -0.7: ([4, 8], [6, 6], [8, 8]),
+            -0.2: ([6, 8], [6, 6], [8, 8]),
+            0.3: ([6, 10], [6, 8], [10, 10]),
+            0.8: ([10, 16], [10, 12], [14, 16]),
+        }[chroma]
         region = {"hueFamilies": hues, "value": values, "chroma": core}
         eligible = [
             sample
@@ -147,20 +154,8 @@ def derive(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
             ("denim", 2, ["B", "PB"], 4, 4),
             ("base-neutral", 8, hues, 2, 2),
             ("secondary-neutral", 4, hues, 4, 4),
-            (
-                "accent",
-                24,
-                hues,
-                core[0],
-                core[1] - (4 if chroma == 0.8 else 2),
-            ),
-            (
-                "statement",
-                8,
-                hues,
-                core[1] - (2 if chroma == 0.8 else 0),
-                core[1],
-            ),
+            ("accent", 24, hues, accents[0], accents[1]),
+            ("statement", 8, hues, statements[0], statements[1]),
         ]
         palette: list[dict[str, Any]] = []
         used = set()
@@ -219,6 +214,8 @@ def main() -> None:
     )
     destination = args.output
     if args.check:
+        if not destination.is_file():
+            raise SystemExit(f"{destination} does not exist")
         if destination.read_bytes() != content.encode():
             raise SystemExit(
                 "seasons.json differs from pinned Munsell derivation"

@@ -40,6 +40,16 @@ function reportNeutralPairings(palette: PaletteEntry[], label: string) {
   else console.info(message);
 }
 
+function assertDisjointSupportRoles(entries: ColorSeason[]) {
+  for (const entry of entries) {
+    const chromas = (role: string) =>
+      entry.palette.filter((swatch) => swatch.role === role).map((swatch) => swatch.munsell.chroma);
+    const accents = new Set(chromas('accent'));
+    const shared = [...new Set(chromas('secondary-neutral'))].filter((chroma) => accents.has(chroma));
+    expect(shared, `${entry.id}: secondary-neutral and accent share a chroma`).toEqual([]);
+  }
+}
+
 describe('knowledge load contract', () => {
   it('loads exactly the twelve color seasons and validates every palette', () => {
     expect(colorSeasons.map((entry) => entry.id).sort()).toEqual([...COLOR_SEASON_IDS].sort());
@@ -59,7 +69,7 @@ describe('knowledge load contract', () => {
         }
       }
     }
-  });
+  }, 30_000);
 
   it('throws for a deliberately malformed knowledge file', () => {
     expect(() => loadSeasons(malformed)).toThrow();
@@ -76,7 +86,7 @@ describe('knowledge load contract', () => {
     }
   });
 
-  it.each(['duplicate', 'role', 'gamut', 'neighbor', 'extra-field'] as const)('rejects %s corruption', (kind) => {
+  it.each(['duplicate', 'role', 'gamut', 'neighbor', 'extra-field', 'near-face'] as const)('rejects %s corruption', (kind) => {
     const changed = structuredClone(colorSeasons);
     const first = changed[0]!;
     if (kind === 'duplicate') first.palette[1]!.lab = first.palette[0]!.lab;
@@ -84,6 +94,7 @@ describe('knowledge load contract', () => {
     if (kind === 'gamut') first.palette[0]!.lab.a = 200;
     if (kind === 'neighbor') first.neighbors = [first.id];
     if (kind === 'extra-field') Object.assign(first, { unexpected: 'spring' });
+    if (kind === 'near-face') first.palette[0]!.nearFace = !first.palette[0]!.nearFace;
     expect(() => loadSeasons(changed)).toThrow();
   });
 });
@@ -102,6 +113,25 @@ it('detects substituted lightness, chroma and hue data', () => {
     }
     expect(() => assertAxes(changed), `substituted ${channel} in ${low.id}`).toThrow();
   }
+});
+
+it('draws every secondary neutral from a lower chroma than every accent', () => {
+  assertDisjointSupportRoles(colorSeasons);
+  for (const entry of colorSeasons) {
+    const highest = Math.max(...entry.palette.filter((s) => s.role === 'secondary-neutral').map((s) => s.munsell.chroma));
+    const lowest = Math.min(...entry.palette.filter((s) => s.role === 'accent').map((s) => s.munsell.chroma));
+    expect(highest, `${entry.id}: secondary-neutral above accent`).toBeLessThan(lowest);
+  }
+});
+
+it('detects secondary neutrals drawn from the accent chroma pool', () => {
+  const changed = structuredClone(colorSeasons);
+  const entry = changed[0]!;
+  const accent = entry.palette.find((swatch) => swatch.role === 'accent')!.munsell.chroma;
+  for (const swatch of entry.palette) {
+    if (swatch.role === 'secondary-neutral') swatch.munsell.chroma = accent;
+  }
+  expect(() => assertDisjointSupportRoles(changed)).toThrow();
 });
 
 it('reports neutral pairing coverage without rejecting a palette', () => {

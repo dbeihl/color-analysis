@@ -5,6 +5,7 @@ import { COLOR_SEASON_IDS, PALETTE_ROLES } from '../../domain/types';
 const axis = z.number().finite().min(-1).max(1);
 const colorSeasonId = z.enum(COLOR_SEASON_IDS);
 const hueFamily = z.enum(['R', 'YR', 'Y', 'GY', 'G', 'BG', 'B', 'PB', 'P', 'RP']);
+const nearFaceRoles = new Set(['accent', 'secondary-neutral']);
 const interval = z.tuple([z.number().finite(), z.number().finite()])
   .refine(([low, high]) => low <= high, 'Region interval is reversed');
 
@@ -47,6 +48,9 @@ export const colorSeasonSchema = z.strictObject({
   if (new Set(entry.neighbors).size !== entry.neighbors.length) issue('Duplicate neighbor');
   const roles = new Set(entry.palette.map((swatch) => swatch.role));
   if (PALETTE_ROLES.some((role) => !roles.has(role))) issue('Missing palette role');
+  if (entry.palette.some((swatch) => swatch.nearFace !== nearFaceRoles.has(swatch.role))) {
+    issue('nearFace disagrees with palette role');
+  }
   const colors = entry.palette.map(({ lab }) => JSON.stringify([lab.l, lab.a, lab.b]));
   if (new Set(colors).size !== colors.length) issue('Duplicate palette color');
 });

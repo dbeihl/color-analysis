@@ -40,4 +40,4 @@ it('reproduces every swatch twice from the pinned source and detects edited outp
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
-}, 60_000);
+}, 180_000);

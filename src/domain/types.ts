@@ -10,7 +10,7 @@ export const PALETTE_ROLES = [
 ] as const;
 
 export type ColorSeasonId = typeof COLOR_SEASON_IDS[number];
-export type CalendarSeason = 'spring' | 'summer' | 'fall' | 'winter';
+export type CalendarSeason = 'spring' | 'summer' | 'autumn' | 'winter';
 export type Axis = 'hue' | 'value' | 'chroma';
 export type TenBand = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
