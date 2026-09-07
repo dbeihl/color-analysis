@@ -5,6 +5,7 @@ import { COLOR_SEASON_IDS, PALETTE_ROLES } from '../../domain/types';
 const axis = z.number().finite().min(-1).max(1);
 const colorSeasonId = z.enum(COLOR_SEASON_IDS);
 const hueFamily = z.enum(['R', 'YR', 'Y', 'GY', 'G', 'BG', 'B', 'PB', 'P', 'RP']);
+const AXES = ['hue', 'value', 'chroma'] as const;
 const nearFaceRoles = new Set(['accent', 'secondary-neutral']);
 const interval = z.tuple([z.number().finite(), z.number().finite()])
   .refine(([low, high]) => low <= high, 'Region interval is reversed');
@@ -46,6 +47,10 @@ export const colorSeasonSchema = z.strictObject({
   if (!entry.id.endsWith(`-${entry.family}`)) issue('ID and family disagree');
   if (entry.neighbors.includes(entry.id)) issue('Self neighbor');
   if (new Set(entry.neighbors).size !== entry.neighbors.length) issue('Duplicate neighbor');
+  const magnitudes = AXES.map((axis) => Math.abs(entry.axes[axis]));
+  const peak = Math.max(...magnitudes);
+  if (magnitudes.filter((magnitude) => magnitude === peak).length > 1) issue('Tied axes cannot declare a dominant');
+  else if (Math.abs(entry.axes[entry.dominant]) !== peak) issue('Dominant is not the strongest axis');
   const roles = new Set(entry.palette.map((swatch) => swatch.role));
   if (PALETTE_ROLES.some((role) => !roles.has(role))) issue('Missing palette role');
   if (entry.palette.some((swatch) => swatch.nearFace !== nearFaceRoles.has(swatch.role))) {

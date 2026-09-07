@@ -115,7 +115,7 @@ describe('knowledge load contract', () => {
     }
   });
 
-  it.each(['duplicate', 'role', 'gamut', 'neighbor', 'extra-field', 'near-face'] as const)('rejects %s corruption', (kind) => {
+  it.each(['duplicate', 'role', 'gamut', 'neighbor', 'extra-field', 'near-face', 'dominant', 'axis-tie'] as const)('rejects %s corruption', (kind) => {
     const changed = structuredClone(colorSeasons);
     const first = changed[0]!;
     if (kind === 'duplicate') first.palette[1]!.lab = first.palette[0]!.lab;
@@ -124,6 +124,8 @@ describe('knowledge load contract', () => {
     if (kind === 'neighbor') first.neighbors = [first.id];
     if (kind === 'extra-field') Object.assign(first, { unexpected: 'spring' });
     if (kind === 'near-face') first.palette[0]!.nearFace = !first.palette[0]!.nearFace;
+    if (kind === 'dominant') first.dominant = first.dominant === 'hue' ? 'chroma' : 'hue';
+    if (kind === 'axis-tie') first.axes = { ...first.axes, hue: Math.max(...Object.values(first.axes).map(Math.abs)) };
     expect(() => loadSeasons(changed)).toThrow();
   });
 });
