@@ -62,13 +62,10 @@ Superseded text: the build prompt says "No image leaves the device by default," 
 
 Correction: both sentences are superseded. A sync tier is the precise event that would forfeit the legal position, because it turned on possession rather than on-device processing.
 
-### 7. Deployment target
+### Note on deployment target
 
-Superseded text: the addendum's GitHub Pages deployment guidance, including its base-path instruction, its `404.html` routing workaround, its public-repository assumption, and its advice on avoiding the need for cross-origin isolation.
-
-Correction: version one hosts on Cloudflare Pages from the private repository, per `DECISIONS.md` entry 5.
-The site base path is the domain root, ordinary SPA routing works because the host supports rewrites, and cross-origin isolation is available without a service-worker hack.
-This decision is provisional pending the captain's confirmation; see `DECISIONS.md` entry 5 for the caveat.
+The addendum's GitHub Pages deployment guidance (its base path, its copied `404.html` routing fallback, self-hosting the model assets, and the Actions deploy workflow) is NOT superseded and is back in force, per `DECISIONS.md` entry 5.
+What the research established independently and does hold: the cross-origin isolation limitation is real and still unresolved upstream on GitHub Pages, and the model assets must be lazy-loaded rather than shipped eagerly on first visit.
 
 ## What was checked in the research, and what did not survive
 

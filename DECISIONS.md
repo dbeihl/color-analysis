@@ -56,33 +56,28 @@ Version one drives makeup off the Western season and accepts coarser matching fo
 
 Forecloses: nothing permanently.
 
-## 5. Repository stays private, version one hosts on Cloudflare Pages
+## 5. Repository is public, version one hosts on GitHub Pages
 
-Decided by: the captain, relayed.
+Decided by: the captain. Final.
 Date: 2026-09-07.
-His words (relayed): "about the color repository, that is fine."
-The choice of host itself was delegated to the fleet, which chose Cloudflare Pages.
+His words: "Public on GitHub Pages."
 
-Reasoning: free GitHub Pages hosting requires a public repository.
-The captain wants it private, and turning a private repository public exposes its whole history in a way that making it private again does not undo.
-So GitHub Pages is out.
-Both Cloudflare Pages and Netlify build private repositories free and can set response headers from a `_headers` file, which GitHub Pages cannot.
-That removes the cross-origin-isolation ceiling, so multi-threaded WebAssembly stays available for the deferred photo work instead of needing a service-worker hack.
-Treat that as a requirement rather than a nicety; it was the captain's stated reason for preferring a different host.
-Cloudflare Pages is chosen over Netlify because its free tier does not meter bandwidth or requests, while Netlify's free tier caps at 100 GB per month, the same soft ceiling GitHub Pages imposed.
-Moving host to escape a ceiling and then adopting the same ceiling would be self-defeating, and the deferred photo work ships several megabytes of model assets on first visit.
+This supersedes an earlier provisional recording in this same entry that had the repository staying private on Cloudflare Pages.
+That reading came from a relay that had not yet caught up with a choice the captain had already made on a decision board.
+This is his own plain statement and is not another provisional reading.
 
-Known ceilings of Cloudflare Pages' free tier, verified against the published limits on 2026-09-07: 25 MiB per individual asset, 20,000 files per site, 500 builds per month, one custom domain, 20 minute build timeout.
+Reasoning for the timing being in our favour, because he asked for this to be said plainly: the repository held nothing but a README when the choice was made, so publishing its history published almost nothing.
+Every commit from here is public from the first one, so there is never a moment where something private has to be scrubbed out of history later.
 
-Consequences now settled: the site base path is the domain root rather than a repository subpath.
-Ordinary SPA routing works because the host supports rewrites, so no hash router and no copied `404.html` is needed.
-Cross-origin isolation is available if the photo work ever needs threads.
+**This repository is public by deliberate choice, made twice, and everything committed to it is readable by anyone.**
+Anyone working in it later needs to know that before they paste anything in.
 
-No deployment configuration, `_headers` file, or build config is created in this task. That is build work for the next task.
+Build consequence: the build targets a project page path, at `dbeihl.github.io/color-analysis/`, not a user page.
+The build configuration itself is not created in this task; only the decision is recorded here.
 
-**Provisional, pending the captain's confirmation.** Earlier the same day he had selected the public GitHub Pages option on a decision board, the opposite of what is recorded here, and the fleet did not know that when it relayed the private reading above.
-Work proceeds on private plus Cloudflare because that is the current explicit instruction and because private is the recoverable direction.
-If he confirms public instead, the host reverts to GitHub Pages and the base path becomes a repository subpath.
+What this costs, accepted rather than disputed: GitHub Pages cannot send the cross-origin isolation headers, so multi-threaded WebAssembly is unavailable to the deferred photo work without a service-worker workaround.
+Its bandwidth allowance is a soft ceiling rather than unmetered.
+Both are accepted consequences of his choice.
 
 ## Settled by the research, not open to reinterpretation
 
