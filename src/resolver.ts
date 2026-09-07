@@ -108,11 +108,15 @@ export function classifyColorSeason(
     ? 0
     : (runnerUp.score - primary.score) / Math.max(runnerUp.score, Number.EPSILON);
   const value = Math.min(marginRatio, features.inputConfidence);
+  const offered = [primary.season.id, ...secondary];
+  const withinTolerance = contenders.length + 1;
   const warnings: StyleProfile['warnings'] = [];
   if (secondary.length > 0) {
     warnings.push({
       code: 'boundary',
-      message: `${contenders.length + 1} seasons are within the comparison tolerance; use the blind comparison to choose.`,
+      message: `${withinTolerance} seasons are within the comparison tolerance. The blind comparison offers ${
+        withinTolerance === offered.length ? `all ${withinTolerance}` : `${offered.length} of them`
+      }: ${offered.join(', ')}.`,
     });
   }
   if (contradicted) {
@@ -133,7 +137,9 @@ export function classifyColorSeason(
       secondary,
       dominantAxis: primary.season.dominant,
       confidence: {
-        basis: marginRatio <= features.inputConfidence ? 'relative-score-margin' : 'self-reported-input-confidence',
+        basis: contradicted
+          ? 'contradicted-adjacency'
+          : marginRatio <= features.inputConfidence ? 'relative-score-margin' : 'self-reported-input-confidence',
         value,
       },
     },

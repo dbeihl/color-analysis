@@ -29,36 +29,23 @@ Put plainly: for mid-lightness colouring the classifier on its own barely tells 
 ### Palette-agreement terms, evaluated and rejected
 
 An earlier revision added two terms measuring how far the person sits from statistics derived from each palette: the separation between the measured skin undertone hue angle and the palette's circular mean hue angle, and the gap between the person's mean sample chroma and the palette's mean swatch chroma.
-Three variants were then measured against that shipped version on the 36 fixtures, with the unselected 3,300-combination grid alongside as a check that the fixtures were not driving the answer.
-Every variant reached all twelve seasons.
+Three variants were measured against that revision during development, on the 36 fixtures and on a larger unselected grid of skin, hair and iris combinations.
+One row survives as evidence, because its scorer is the one in the tree and its fixtures are committed:
 
 | variant | conflicting-signals | low-confidence | boundary | family split S/Su/A/W |
 | --- | --- | --- | --- | --- |
-| shipped: raw hue angle plus chroma | 9/36 | 32/36 | 15/36 | 10/7/11/8 |
-| V1: normalized-position hue plus chroma | 10/36 | 29/36 | 12/36 | 9/10/9/8 |
-| V2: no agreement terms, nearest swatch only | 12/36 | 31/36 | 12/36 | 9/9/9/9 |
-| V3: chroma agreement alone | 12/36 | 31/36 | 14/36 | 9/11/9/7 |
+| no agreement terms, nearest swatch only (shipped) | 12/36 | 31/36 | 12/36 | 9/9/9/9 |
 
-| variant, 3,300-combination grid | conflicting-signals | low-confidence | family split S/Su/A/W |
-| --- | --- | --- | --- |
-| shipped: raw hue angle plus chroma | 41.5% | 91.1% | 32.3/8.7/50.8/8.2 |
-| V1: normalized-position hue plus chroma | 42.6% | 92.5% | 24.1/20.2/45.8/10.0 |
-| V2: no agreement terms, nearest swatch only | 44.2% | 91.7% | 37.9/14.5/37.6/10.1 |
-| V3: chroma agreement alone | 43.0% | 92.1% | 26.7/16.9/46.2/10.2 |
+The other rows have been removed rather than repeated.
+Those alternative scorers were never committed and the grid had no committed generator, so every number measured against them is a one-time development measurement that was not preserved.
+It is recollection, not reproducible evidence, and anyone who wants it must measure again.
 
-V1 places the person inside the observed human undertone range of 48.8 to 89.1 degrees and each palette inside the observed palette mean-hue range of 54.6 to 311.6 degrees, then compares those two positions directly, with no correction applied to either.
+The decision does not rest on it. Both terms were removed because each compares two quantities that are not on the same scale.
+A palette's mean hue angle is an average over garment colours drawn from around the wheel, and those means run from 54.6 to 311.6 degrees across the twelve palettes, a figure recomputable from `src/knowledge/seasons.json`.
+Human skin occupies a narrow warm band by comparison, so the separation between the two is mostly a fixed property of the palette, with only a small part of it responding to the person in front of it.
+Chroma has the same defect: a person's mean sample chroma sits below every palette's mean swatch chroma, so the gap ranks palettes by how saturated their garments are rather than measuring the person.
+A term whose value is mostly a property of the palette cannot be evidence about a person, and neither term bought a measurable improvement, so both are gone and the score is nearest-swatch distance alone.
 
-None of the three meaningfully separates the seasons.
-Across all four rows the whole spread is three cases of 36 on `conflicting-signals`, three on `low-confidence`, and under three percentage points on either metric across the grid, which is the size of the difference one fixture makes.
-Whichever variant leads on one measure trails on another, and no variant leads on both sets.
-
-V2 was chosen, so both terms are gone and the score is nearest-swatch distance alone.
-The reason is not that V2 won on the numbers, because nothing won: it is that both agreement terms move answers without earning it.
-Human skin occupies a narrow hue band, 48.8 to 89.1 degrees, while palette mean hues span 54.6 to 311.6, so the hue term is a per-season constant with a small person-driven swing on top; the same holds for chroma, because a person's mean sample chroma sits below every palette's mean swatch chroma, making the term a ranking of palettes by chroma rather than a measurement of the person.
-The shipped raw-hue version reassigned the seasonal family of four of the 36 fixtures on that basis.
-A term that changes the answer for a reason unrelated to the person, and buys nothing measurable, is worse than no term.
-
-The grid family splits are worth reading as their own finding: the nearest-swatch metric assigns autumn to 37.6 percent of combinations and summer to 14.5 percent, so the family imbalance belongs to the distance metric and the palettes rather than to anything that was added or removed here.
 `low-confidence` has a separate ceiling, because the reported confidence is a margin divided by the runner-up's absolute score, and any term that widens the margin raises that denominator by about as much.
 
 ## The uncertainty contract
@@ -69,11 +56,13 @@ Seasons that score equally are all listed rather than resolved by name order.
 A season within the tolerance that the winner does not declare as a neighbour is a contradiction between the score ranking and the declared adjacency ring, so it is never offered for comparison.
 It instead sets the reported confidence to zero and raises `conflicting-signals`, because a margin over a season that should not be close carries no information about how sure the answer is.
 
-The `boundary` warning counts every season inside the tolerance, neighbours and non-neighbours alike, because its sentence claims to describe everything that close.
-Only the neighbours are offered for comparison, and `conflicting-signals` remains the separate warning that says a non-adjacent season is among them.
-A test recomputes the contender count from `seasons.json` independently of the classifier and asserts the emitted number matches; counting only the neighbours, which is what an earlier revision did, fails it with `monk-2-dark-red-brown: expected 2 to be 3`, and overcounting by one fails it as well.
+The `boundary` warning makes two separate statements rather than one that overreaches.
+It counts every season inside the tolerance, neighbours and non-neighbours alike, and then names the seasons the blind comparison will actually put in front of the person, which is the winner plus its declared neighbours.
+When those two counts differ, the difference is exactly the non-adjacent contenders, and `conflicting-signals` is the warning that explains them.
+A test recomputes the contender count from `seasons.json` independently of the classifier, asserts the emitted count and the offered list against it, and requires the fixtures to exercise both the equal-count and the differing-count wording.
+Counting only the neighbours, which is what an earlier revision did, fails it with `monk-2-dark-red-brown: expected '2 seasons are within the comparison t…' to contain '3 seasons are within the comparison t…'`, and offering every contender rather than the neighbours fails it as well.
 
-`confidence.basis` names whichever of the two limits actually bound the value: `relative-score-margin` for the gap between the top two palettes, and `self-reported-input-confidence` for the certainty the person entered about their own colour readings.
+`confidence.basis` names what actually determined the value: `relative-score-margin` for the gap between the top two palettes, `self-reported-input-confidence` for the certainty the person entered about their own colour readings, and `contradicted-adjacency` when a non-adjacent contender forced the value to zero regardless of either of those.
 Neither is a calibrated probability that the season is correct.
 
 ## ITA for a negative b*

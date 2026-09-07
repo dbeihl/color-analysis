@@ -135,12 +135,22 @@ describe('golden resolver cases', () => {
     }
   });
 
-  it('counts every season inside the tolerance in the boundary warning', () => {
+  it('states the tolerance count and the seasons the blind comparison will offer', () => {
     const contested = golden.filter(({ expected }) => expected.warnings.includes('boundary'));
-    expect(new Set(contested.map(({ input }) => contenderCount(input))).size).toBeGreaterThan(1);
+    const equal = contested.filter(({ input, expected }) => contenderCount(input) === expected.secondary.length + 1);
+    expect(equal.length).toBeGreaterThan(0);
+    expect(contested.length - equal.length).toBeGreaterThan(0);
     for (const fixture of contested) {
-      const boundary = resolveColoring(fixture.input).warnings.find(({ code }) => code === 'boundary')!;
-      expect(Number(boundary.message.match(/^\d+/)?.[0]), fixture.id).toBe(contenderCount(fixture.input));
+      const { colorSeason, warnings } = resolveColoring(fixture.input);
+      const { message } = warnings.find(({ code }) => code === 'boundary')!;
+      const withinTolerance = contenderCount(fixture.input);
+      const offered = [colorSeason.primary, ...colorSeason.secondary];
+      expect(message, fixture.id).toContain(`${withinTolerance} seasons are within the comparison tolerance.`);
+      expect(message, fixture.id).toContain(`: ${offered.join(', ')}.`);
+      expect(message.includes(`offers all ${withinTolerance}`), fixture.id)
+        .toBe(withinTolerance === offered.length);
+      expect(message.includes(`offers ${offered.length} of them`), fixture.id)
+        .toBe(withinTolerance !== offered.length);
     }
   });
 
@@ -166,8 +176,19 @@ describe('golden resolver cases', () => {
   });
 });
 
+it('names contradicted adjacency when that is what zeroed the confidence', () => {
+  const fixture = golden.find(({ expected }) => expected.warnings.includes('conflicting-signals'))!;
+  const { confidence } = classifyColorSeason(
+    measureColoring({ ...fixture.input, confidence: 1 }),
+  ).colorSeason;
+  expect(confidence.basis).toBe('contradicted-adjacency');
+  expect(confidence.value).toBe(0);
+});
+
 it('labels confidence with whichever of the two limits actually bound it', () => {
-  const fixture = golden.reduce((widest, entry) => (entry.margin > widest.margin ? entry : widest));
+  const fixture = golden
+    .filter(({ expected }) => !expected.warnings.includes('conflicting-signals'))
+    .reduce((widest, entry) => (entry.margin > widest.margin ? entry : widest));
   const certain = classifyColorSeason(measureColoring({ ...fixture.input, confidence: 1 })).colorSeason;
   expect(certain.confidence.basis).toBe('relative-score-margin');
   expect(certain.confidence.value).toBeGreaterThan(0.01);
