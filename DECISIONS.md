@@ -14,13 +14,14 @@ Reasoning: the best documented automated accuracy for classifying a face into on
 No dataset is available to this project to check itself against.
 The one the research cites is research-use-only and behind a request form, so the accuracy of a measurement pipeline would be not merely uncertain but unmeasured.
 "Use a photo" is two features with completely different evidence behind them.
-Measuring a person from pixels needs colour-profile handling, image segmentation with a known open iOS defect, illuminant estimation with a per-phone calibration step, and multi-shot consensus, and it buys an input capped near 55%.
+Measuring a person from pixels needs colour-profile handling, image segmentation with a known open defect (the MediaPipe selfie-segmentation category-scramble on iOS Safari with the GPU delegate, issue 6142, still open), illuminant estimation with a per-phone calibration step, and multi-shot consensus.
+It buys an input capped near 55%.
 Comparing two candidate colours composited beside the same face in the same photograph needs almost none of that, because both colours sit in the same light and the illuminant error largely cancels.
 It only needs the photograph to be internally consistent.
 The comparison is also what a professional colour analyst actually does, and it is the half the research most strongly endorses.
 So version one ships the comparison and defers the measurement.
 
-Forecloses: the "just take a selfie and get an answer" moment, until version two.
+Forecloses: nothing permanently. Automated selfie-based classification is deferred to version two.
 
 ## 2. Comparing the generated capsule against clothes already owned defers to version two
 
@@ -45,12 +46,13 @@ It is kept because necklines, collars, eyewear and earring guidance is a real pa
 
 Forecloses: nothing.
 
-## 4. The Korean tone lens defers
+## 4. The Korean tone lens is deferred
 
 Decided by: the captain.
 Date: 2026-09-07.
 His words: none beyond the approval.
 
+The Korean tone lens is a tone-based classification system used in Korean personal-colour practice.
 Reasoning: the tone system is genuinely the better lens for neutral undertones and it maps onto how cosmetics are actually merchandised, but its colour data is proprietary and its numeric coordinates are effectively not publicly available, while the Western twelve-season palette has a clean openly-licensed source.
 Version one drives makeup off the Western season and accepts coarser matching for neutral undertones.
 
