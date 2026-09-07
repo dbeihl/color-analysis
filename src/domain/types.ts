@@ -13,6 +13,7 @@ export type ColorSeasonId = typeof COLOR_SEASON_IDS[number];
 export type CalendarSeason = 'spring' | 'summer' | 'autumn' | 'winter';
 export type Axis = 'hue' | 'value' | 'chroma';
 export type TenBand = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+export type ItaDepthBand = 'very-light' | 'light' | 'intermediate' | 'tan' | 'brown' | 'dark';
 
 /** CIELAB, D65 white, CIE 1931 2-degree observer; Culori's lab65 mode. */
 export interface Lab {
@@ -29,6 +30,15 @@ export interface ColoringInput {
   source: 'manual';
   /** Self-reported certainty in [0, 1], never a calibrated accuracy probability. */
   confidence: number;
+}
+
+export interface ColoringFeatures {
+  samples: { skin: Lab; hair: Lab; eye: Lab };
+  depth: { itaDegrees: number; band: ItaDepthBand };
+  undertone: { hueAngleDegrees: number };
+  meanChroma: number;
+  skinHairValueContrast: number;
+  inputConfidence: number;
 }
 
 export interface PaletteEntry {
@@ -64,6 +74,10 @@ export interface StyleProfile {
     primary: ColorSeasonId;
     secondary?: ColorSeasonId;
     dominantAxis: Axis;
+    confidence: {
+      basis: 'relative-score-margin';
+      value: number;
+    };
   };
   contrastLevel: 'low' | 'medium' | 'high';
   palette: PaletteEntry[];
