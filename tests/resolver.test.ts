@@ -136,7 +136,7 @@ describe('golden resolver cases', () => {
   });
 
   it('states the tolerance count and the seasons the blind comparison will offer', () => {
-    const contested = golden.filter(({ expected }) => expected.warnings.includes('boundary'));
+    const contested = golden.filter(({ expected }) => expected.secondary.length > 0);
     const equal = contested.filter(({ input, expected }) => contenderCount(input) === expected.secondary.length + 1);
     expect(equal.length).toBeGreaterThan(0);
     expect(contested.length - equal.length).toBeGreaterThan(0);
@@ -151,6 +151,32 @@ describe('golden resolver cases', () => {
         .toBe(withinTolerance === offered.length);
       expect(message.includes(`offers ${offered.length} of them`), fixture.id)
         .toBe(withinTolerance !== offered.length);
+    }
+  });
+
+  it('raises the boundary warning for every case with a rival inside the tolerance', () => {
+    const close = golden.filter(({ input }) => contenderCount(input) > 1);
+    expect(close.length).toBeGreaterThan(0);
+    expect(golden.length - close.length).toBeGreaterThan(0);
+    for (const fixture of golden) {
+      const raised = resolveColoring(fixture.input).warnings.some(({ code }) => code === 'boundary');
+      expect(raised, fixture.id).toBe(contenderCount(fixture.input) > 1);
+    }
+  });
+
+  it('says nothing is offered when no season inside the tolerance is a neighbour', () => {
+    const orphaned = golden.filter(({ expected }) =>
+      expected.warnings.includes('boundary') && expected.secondary.length === 0);
+    expect(orphaned.length).toBeGreaterThan(0);
+    for (const fixture of orphaned) {
+      const { colorSeason, warnings } = resolveColoring(fixture.input);
+      const { message } = warnings.find(({ code }) => code === 'boundary')!;
+      expect(message, fixture.id).toBe(
+        `${contenderCount(fixture.input)} seasons are within the comparison tolerance. `
+          + `None of the rivals is a declared neighbour of ${colorSeason.primary}, `
+          + 'so the blind comparison offers none of them.',
+      );
+      expect(warnings.map(({ code }) => code), fixture.id).toContain('conflicting-signals');
     }
   });
 
