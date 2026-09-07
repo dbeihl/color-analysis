@@ -2,8 +2,18 @@ import { differenceCiede2000 } from 'culori';
 import { describe, expect, it } from 'vitest';
 import { COLOR_SEASON_IDS, type ColoringInput } from '../src/domain/types';
 import { colorSeasons } from '../src/knowledge/load';
-import { classifyColorSeason, measureColoring, rankPalette, resolveColoring } from '../src/resolver';
+import {
+  BOUNDARY_TOLERANCE,
+  classifyColorSeason,
+  measureColoring,
+  rankPalette,
+  resolveColoring,
+} from '../src/resolver';
 import golden from './fixtures/resolver-golden.json';
+
+const committedSwatches = new Set(
+  colorSeasons.flatMap(({ palette }) => palette.map(({ lab }) => `${lab.l},${lab.a},${lab.b}`)),
+);
 
 describe('manual color measurement', () => {
   const input: ColoringInput = {
@@ -29,6 +39,15 @@ describe('manual color measurement', () => {
     expect(first.skinHairValueContrast).toBe(30);
   });
 
+  it('accepts a negative skin b* and still bands a light sample as light', () => {
+    const cool = measureColoring({
+      ...input,
+      skin: { ...input.skin, lab: { mode: 'lab65', l: 80, a: 0, b: -5 } },
+    });
+    expect(cool.depth.itaDegrees).toBeCloseTo(99.4623, 4);
+    expect(cool.depth.band).toBe('very-light');
+  });
+
   it('rejects manual values outside the domain contract', () => {
     expect(() => measureColoring({ ...input, confidence: 1.01 })).toThrow();
   });
@@ -46,41 +65,72 @@ it('scores palette swatches independently of declared season axes', () => {
   }
 });
 
-it('matches all golden resolver cases across every season and Monk band', () => {
-  const seasons = new Set<string>();
-  const monkBands = new Set<number>();
-  expect(golden).toHaveLength(36);
-  for (const fixture of golden) {
-    const result = resolveColoring(fixture.input);
-    expect(result.colorSeason.primary, fixture.id).toBe(fixture.expected.primary);
-    expect(result.colorSeason.secondary, fixture.id).toBeUndefined();
-    seasons.add(fixture.expected.primary);
-    monkBands.add(fixture.input.skin.monkBand);
-  }
-  expect(seasons).toEqual(new Set(COLOR_SEASON_IDS));
-  expect(monkBands).toEqual(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+describe('golden resolver cases', () => {
+  it('draws every case from colours no palette contains', () => {
+    expect(golden).toHaveLength(36);
+    for (const { id, input } of golden) {
+      for (const { lab } of [input.hair, input.eye]) {
+        expect(`${lab.l},${lab.a},${lab.b}`, id).not.toBeOneOf([...committedSwatches]);
+      }
+    }
+  });
+
+  it('matches all golden resolver cases across every season and Monk band', () => {
+    const seasons = new Set<string>();
+    const monkBands = new Set<number>();
+    for (const fixture of golden) {
+      const result = resolveColoring(fixture.input);
+      expect(result.colorSeason.primary, fixture.id).toBe(fixture.expected.primary);
+      expect(result.colorSeason.secondary, fixture.id).toEqual(fixture.expected.secondary);
+      expect(result.warnings.map(({ code }) => code), fixture.id).toEqual(fixture.expected.warnings);
+      seasons.add(fixture.expected.primary);
+      monkBands.add(fixture.input.skin.monkBand);
+    }
+    expect(seasons).toEqual(new Set(COLOR_SEASON_IDS));
+    expect(monkBands).toEqual(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+  });
+
+  it('offers a second season exactly when the recorded margin is inside the tolerance', () => {
+    const margins = golden.map(({ margin }) => margin);
+    expect(margins.filter((margin) => margin >= 0.002 && margin <= 0.017).length).toBeGreaterThanOrEqual(10);
+    for (const fixture of golden) {
+      const result = resolveColoring(fixture.input);
+      const contended = result.colorSeason.secondary.length > 0
+        || result.warnings.some(({ code }) => code === 'conflicting-signals');
+      expect(contended, fixture.id).toBe(fixture.margin <= BOUNDARY_TOLERANCE);
+    }
+  });
+
+  it('names only seasons the primary declares as neighbours', () => {
+    for (const fixture of golden) {
+      const { primary, secondary } = resolveColoring(fixture.input).colorSeason;
+      const neighbors = colorSeasons.find(({ id }) => id === primary)!.neighbors;
+      expect(secondary.every((id) => neighbors.includes(id)), fixture.id).toBe(true);
+    }
+  });
+
+  it('fails a golden case whose expected season is wrong', () => {
+    const fixture = golden[0]!;
+    const wrong = COLOR_SEASON_IDS.find((id) => id !== fixture.expected.primary)!;
+    expect(() => expect(resolveColoring(fixture.input).colorSeason.primary).toBe(wrong)).toThrow();
+  });
+
+  it('drops every boundary case when the tolerance is zero', () => {
+    const fixture = golden.find(({ expected, margin }) => expected.secondary.length > 0 && margin > 0)!;
+    const result = classifyColorSeason(measureColoring(fixture.input), 0);
+    expect(result.colorSeason.secondary).toEqual([]);
+    expect(result.warnings.map(({ code }) => code)).not.toContain('boundary');
+  });
 });
 
-it('returns both adjacent seasons inside the boundary tolerance', () => {
-  const result = resolveColoring({
-    skin: {
-      lab: { mode: 'lab65', l: 55.14213021508124, a: 7.782267412276223, b: 26.744393855394655 },
-      monkBand: 6,
-    },
-    hair: {
-      lab: { mode: 'lab65', l: 65.606236176, a: -16.577053176, b: 3.245282912 },
-      naturalLevel: 7,
-      greyPercent: 0,
-    },
-    eye: {
-      lab: { mode: 'lab65', l: 67.367900856, a: 23.208597232, b: 55.46818988 },
-    },
-    source: 'manual',
-    confidence: 0.9,
-  });
-  expect(result.colorSeason.primary).toBe('true-spring');
-  expect(result.colorSeason.secondary).toBe('bright-spring');
-  expect(result.warnings.map(({ code }) => code)).toContain('boundary');
+it('labels confidence with whichever of the two limits actually bound it', () => {
+  const fixture = golden.reduce((widest, entry) => (entry.margin > widest.margin ? entry : widest));
+  const certain = classifyColorSeason(measureColoring({ ...fixture.input, confidence: 1 })).colorSeason;
+  expect(certain.confidence.basis).toBe('relative-score-margin');
+  expect(certain.confidence.value).toBeGreaterThan(0.01);
+  const unsure = classifyColorSeason(measureColoring({ ...fixture.input, confidence: 0.01 })).colorSeason;
+  expect(unsure.confidence.basis).toBe('self-reported-input-confidence');
+  expect(unsure.confidence.value).toBe(0.01);
 });
 
 it('ranks near-face colors by CIEDE2000 distance without using display roles', () => {
@@ -99,4 +149,13 @@ it('ranks near-face colors by CIEDE2000 distance without using display roles', (
     else if (entry.role === 'denim') entry.role = 'metal';
   }
   expect(rankPalette(skin, season).map(({ lab }) => lab)).toEqual(before);
+});
+
+it('hands back palette entries a caller cannot use to corrupt the knowledge base', () => {
+  const season = colorSeasons[0]!;
+  const entry = rankPalette(season.palette[0]!.lab, season)[0]!;
+  const original = structuredClone(season.palette);
+  entry.name = 'renamed';
+  entry.lab.l = -1;
+  expect(season.palette).toEqual(original);
 });

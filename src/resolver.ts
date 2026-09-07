@@ -2,6 +2,7 @@ import { converter, differenceCiede2000 } from 'culori';
 import { z } from 'zod';
 import {
   type ColorSeason,
+  type ColorSeasonId,
   type ColoringFeatures,
   type ColoringInput,
   type ItaDepthBand,
@@ -27,7 +28,12 @@ const coloringInputSchema = z.strictObject({
 
 const oklab = converter('oklab');
 const swatchDistance = differenceCiede2000();
-const BOUNDARY_TOLERANCE = 0.005;
+export const BOUNDARY_TOLERANCE = 0.005;
+const LOW_CONFIDENCE = 0.25;
+const paletteOklab = new Map(colorSeasons.map((season) => [
+  season.id,
+  season.palette.map(({ lab }) => oklab(lab)),
+]));
 
 function depthBand(itaDegrees: number): ItaDepthBand {
   if (itaDegrees > 55) return 'very-light';
@@ -39,8 +45,7 @@ function depthBand(itaDegrees: number): ItaDepthBand {
 }
 
 function itaDegrees({ l, b }: Lab) {
-  if (b === 0) return l === 50 ? 0 : Math.sign(l - 50) * 90;
-  return Math.atan((l - 50) / b) * 180 / Math.PI;
+  return Math.atan2(l - 50, b) * 180 / Math.PI;
 }
 
 function hueAngleDegrees({ a, b }: Lab) {
@@ -72,33 +77,51 @@ export function measureColoring(input: unknown): ColoringFeatures {
   };
 }
 
-function oklabDistance(left: Lab, right: Lab) {
-  const a = oklab(left);
-  const b = oklab(right);
-  return Math.hypot(a.l - b.l, a.a - b.a, a.b - b.b);
+type Oklab = NonNullable<ReturnType<typeof oklab>>;
+
+function oklabDistance(left: Oklab, right: Oklab) {
+  return Math.hypot(left.l - right.l, left.a - right.a, left.b - right.b);
 }
 
-function seasonScore(features: ColoringFeatures, season: ColorSeason) {
-  return Object.values(features.samples).reduce((total, sample) => total + Math.min(
-    ...season.palette.map((swatch) => oklabDistance(sample, swatch.lab)),
-  ), 0) / 3;
+function seasonScore(samples: Oklab[], season: ColorSeason) {
+  const swatches = paletteOklab.get(season.id)!;
+  return samples.reduce((total, sample) => total + Math.min(
+    ...swatches.map((swatch) => oklabDistance(sample, swatch)),
+  ), 0) / samples.length;
 }
 
-export function classifyColorSeason(features: ColoringFeatures): Pick<StyleProfile, 'colorSeason' | 'warnings'> {
-  const [primary, secondary] = colorSeasons
-    .map((season) => ({ season, score: seasonScore(features, season) }))
-    .sort((a, b) => a.score - b.score || a.season.id.localeCompare(b.season.id));
-  if (!primary || !secondary) throw new Error('At least two color-season palettes are required');
-  const margin = secondary.score - primary.score;
-  const confidence = Math.min(features.inputConfidence, margin / Math.max(secondary.score, Number.EPSILON));
+export function classifyColorSeason(
+  features: ColoringFeatures,
+  tolerance = BOUNDARY_TOLERANCE,
+): Pick<StyleProfile, 'colorSeason' | 'warnings'> {
+  const samples = Object.values(features.samples).map((sample) => oklab(sample));
+  const ranked = colorSeasons
+    .map((season) => ({ season, score: seasonScore(samples, season) }))
+    .sort((a, b) => a.score - b.score);
+  const [primary, runnerUp] = ranked;
+  if (!primary || !runnerUp) throw new Error('At least two color-season palettes are required');
+  const contenders = ranked.slice(1).filter(({ score }) => score - primary.score <= tolerance);
+  const declared = new Set<ColorSeasonId>(primary.season.neighbors);
+  const secondary = contenders.filter(({ season }) => declared.has(season.id)).map(({ season }) => season.id);
+  const contradicted = contenders.some(({ season }) => !declared.has(season.id));
+  const marginRatio = contradicted
+    ? 0
+    : (runnerUp.score - primary.score) / Math.max(runnerUp.score, Number.EPSILON);
+  const value = Math.min(marginRatio, features.inputConfidence);
   const warnings: StyleProfile['warnings'] = [];
-  if (margin <= BOUNDARY_TOLERANCE) {
+  if (secondary.length > 0) {
     warnings.push({
       code: 'boundary',
       message: 'Two seasons are within the comparison tolerance; use the blind comparison to choose.',
     });
   }
-  if (confidence < 0.25) {
+  if (contradicted) {
+    warnings.push({
+      code: 'conflicting-signals',
+      message: 'A season the palettes do not treat as adjacent scores just as well; this classification is unreliable.',
+    });
+  }
+  if (value < LOW_CONFIDENCE) {
     warnings.push({
       code: 'low-confidence',
       message: 'The palette scores are close or the manual inputs are uncertain; treat this as a suggestion.',
@@ -107,16 +130,19 @@ export function classifyColorSeason(features: ColoringFeatures): Pick<StyleProfi
   return {
     colorSeason: {
       primary: primary.season.id,
-      ...(margin <= BOUNDARY_TOLERANCE ? { secondary: secondary.season.id } : {}),
+      secondary,
       dominantAxis: primary.season.dominant,
-      confidence: { basis: 'relative-score-margin', value: confidence },
+      confidence: {
+        basis: marginRatio <= features.inputConfidence ? 'relative-score-margin' : 'self-reported-input-confidence',
+        value,
+      },
     },
     warnings,
   };
 }
 
 export function rankPalette(skin: Lab, season: ColorSeason): PaletteEntry[] {
-  return [...season.palette].sort((a, b) =>
+  return structuredClone(season.palette).sort((a, b) =>
     Number(b.nearFace) - Number(a.nearFace)
       || swatchDistance(skin, a.lab) - swatchDistance(skin, b.lab)
       || a.name.localeCompare(b.name),

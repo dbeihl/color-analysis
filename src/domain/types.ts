@@ -72,10 +72,10 @@ export interface Warning {
 export interface StyleProfile {
   colorSeason: {
     primary: ColorSeasonId;
-    secondary?: ColorSeasonId;
+    secondary: ColorSeasonId[];
     dominantAxis: Axis;
     confidence: {
-      basis: 'relative-score-margin';
+      basis: 'relative-score-margin' | 'self-reported-input-confidence';
       value: number;
     };
   };
