@@ -1,4 +1,4 @@
-import { differenceCiede2000 } from 'culori';
+import { converter, differenceCiede2000 } from 'culori';
 import { describe, expect, it } from 'vitest';
 import { COLOR_SEASON_IDS, type ColoringInput } from '../src/domain/types';
 import { colorSeasons } from '../src/knowledge/load';
@@ -10,6 +10,21 @@ import {
   resolveColoring,
 } from '../src/resolver';
 import golden from './fixtures/resolver-golden.json';
+
+const toOklab = converter('oklab');
+
+function contenderCount(input: unknown) {
+  const { samples } = measureColoring(input);
+  const scores = colorSeasons.map((season) => Object.values(samples).reduce((total, sample) => {
+    const from = toOklab(sample)!;
+    return total + Math.min(...season.palette.map(({ lab }) => {
+      const to = toOklab(lab)!;
+      return Math.hypot(from.l - to.l, from.a - to.a, from.b - to.b);
+    }));
+  }, 0) / 3);
+  const best = Math.min(...scores);
+  return scores.filter((score) => score - best <= BOUNDARY_TOLERANCE).length;
+}
 
 const committedSwatches = new Set(
   colorSeasons.flatMap(({ palette }) => palette.map(({ lab }) => `${lab.l},${lab.a},${lab.b}`)),
@@ -120,13 +135,12 @@ describe('golden resolver cases', () => {
     }
   });
 
-  it('counts every season actually in contention in the boundary warning', () => {
-    const contested = golden.filter(({ expected }) => expected.secondary.length > 0);
-    expect(new Set(contested.map(({ expected }) => expected.secondary.length)).size).toBeGreaterThan(1);
+  it('counts every season inside the tolerance in the boundary warning', () => {
+    const contested = golden.filter(({ expected }) => expected.warnings.includes('boundary'));
+    expect(new Set(contested.map(({ input }) => contenderCount(input))).size).toBeGreaterThan(1);
     for (const fixture of contested) {
       const boundary = resolveColoring(fixture.input).warnings.find(({ code }) => code === 'boundary')!;
-      expect(Number(boundary.message.match(/^\d+/)?.[0]), fixture.id)
-        .toBe(fixture.expected.secondary.length + 1);
+      expect(Number(boundary.message.match(/^\d+/)?.[0]), fixture.id).toBe(contenderCount(fixture.input));
     }
   });
 
