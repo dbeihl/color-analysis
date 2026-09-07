@@ -141,6 +141,7 @@ It is a navigational convention for the next comparison phase, with no fitted de
 ## Checks and limits
 
 Import-time Zod validation rejects malformed fields, nonfinite or out-of-gamut Lab values, missing roles, duplicate colours, missing colour seasons and invalid neighbour relationships.
+It also rejects a `dominant` label that is not the axis with the largest absolute value in `axes`, and treats a tie between two axes at that maximum as a hard failure rather than picking one, because tied axes do not support a dominant label at all.
 The browser entry imports the validated knowledge module before mounting its empty React root.
 Tests replace the JSON module with a deliberately malformed fixture to prove import itself rejects it.
 
@@ -152,6 +153,9 @@ Warmth is the mean circular projection `cos(h - 60 degrees)` of the CIELCh D65 h
 Every palette's projected warmth must have the sign of its declared hue axis, putting positive-axis palettes on the warm side of negative-axis palettes.
 This projection and its 60-degree pole are explicit audit heuristics, not skin-undertone measurements.
 Substitution controls prove the axis checks reject palettes whose colours contradict their metadata.
+Further tests assert that every swatch falls inside its `coreRegion`, on hue family and on chroma, with four named exceptions and no general escape hatch.
+Denim and metal are the named hue exceptions, because they are drawn as support regions from outside the core families; base neutrals and secondary neutrals are the named chroma exceptions, because they sit at or below the core chroma floor by design.
+Negative controls prove each of these rejects a deliberately corrupted knowledge file rather than passing vacuously.
 
 The printed neutral report counts base neutrals and accents with fewer than three candidate pairings.
 For this report only, a candidate pairing means CIEDE2000 at least 10 between the accent and base neutral, as a rough distinction check.

@@ -17,15 +17,16 @@ const stats = (entry: ColorSeason) => ({
 });
 
 function assertAxes(entries: ColorSeason[]) {
+  const measured = new Map(entries.map((entry) => [entry.id, stats(entry)]));
   for (const entry of entries) {
-    expect(Math.sign(stats(entry).hue), `${entry.id}: declared warmth`).toBe(Math.sign(entry.axes.hue));
+    expect(Math.sign(measured.get(entry.id)!.hue), `${entry.id}: declared warmth`).toBe(Math.sign(entry.axes.hue));
     for (const other of entries) {
       if (entry.axes.value < other.axes.value) {
-        expect(stats(entry).value, `${entry.id} should be darker than ${other.id}`).toBeLessThan(stats(other).value);
+        expect(measured.get(entry.id)!.value, `${entry.id} should be darker than ${other.id}`).toBeLessThan(measured.get(other.id)!.value);
       }
       // Soft and light share one chroma ladder: this passes on an incidental margin from their value difference, and does not pin the chroma axis independently.
       if (entry.family === other.family && entry.axes.chroma < other.axes.chroma) {
-        expect(stats(entry).chroma, `${entry.id} should be less chromatic than ${other.id}`).toBeLessThan(stats(other).chroma);
+        expect(measured.get(entry.id)!.chroma, `${entry.id} should be less chromatic than ${other.id}`).toBeLessThan(measured.get(other.id)!.chroma);
       }
     }
   }
