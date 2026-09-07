@@ -75,7 +75,7 @@ export interface StyleProfile {
     secondary: ColorSeasonId[];
     dominantAxis: Axis;
     confidence: {
-      basis: 'relative-score-margin' | 'self-reported-input-confidence';
+      basis: 'relative-score-margin' | 'self-reported-input-confidence' | 'contradicted-adjacency';
       value: number;
     };
   };
