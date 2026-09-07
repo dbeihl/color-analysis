@@ -70,6 +70,17 @@ function assertCoreChromaContainment(entries: ColorSeason[]) {
   }
 }
 
+function assertCoreValueContainment(entries: ColorSeason[]) {
+  for (const entry of entries) {
+    const [low, high] = entry.coreRegion.value;
+    for (const swatch of entry.palette) {
+      const label = `${entry.id}: ${swatch.name} (${swatch.role}) sits outside coreRegion value [${low}, ${high}]`;
+      expect(swatch.munsell.value, label).toBeGreaterThanOrEqual(low);
+      expect(swatch.munsell.value, label).toBeLessThanOrEqual(high);
+    }
+  }
+}
+
 function assertCoreHueContainment(entries: ColorSeason[]) {
   for (const entry of entries) {
     for (const swatch of entry.palette) {
@@ -145,6 +156,25 @@ it('detects substituted lightness, chroma and hue data', () => {
     }
     expect(() => assertAxes(changed), `substituted ${channel} in ${low.id}`).toThrow();
   }
+});
+
+it('keeps every swatch inside its core value interval', () => {
+  assertCoreValueContainment(colorSeasons);
+});
+
+it('detects a swatch drawn from outside the core value interval', () => {
+  const changed = structuredClone(colorSeasons);
+  const entry = changed[0]!;
+  entry.palette[0]!.munsell.value = entry.coreRegion.value[0] - 1;
+  expect(() => assertCoreValueContainment(changed)).toThrow();
+});
+
+it('detects a palette whose warmth contradicts its declared hue axis', () => {
+  const changed = structuredClone(colorSeasons);
+  const spring = changed.find((entry) => entry.id === 'light-spring')!;
+  const summer = changed.find((entry) => entry.id === 'light-summer')!;
+  [spring.palette, summer.palette] = [summer.palette, spring.palette];
+  expect(() => assertAxes(changed)).toThrow(/light-spring: declared warmth/);
 });
 
 it('draws every secondary neutral from a lower chroma than every accent', () => {

@@ -153,7 +153,8 @@ Warmth is the mean circular projection `cos(h - 60 degrees)` of the CIELCh D65 h
 Every palette's projected warmth must have the sign of its declared hue axis, putting positive-axis palettes on the warm side of negative-axis palettes.
 This projection and its 60-degree pole are explicit audit heuristics, not skin-undertone measurements.
 Substitution controls prove the axis checks reject palettes whose colours contradict their metadata.
-Further tests assert that every swatch falls inside its `coreRegion`, on hue family and on chroma, with four named exceptions and no general escape hatch.
+Further tests assert that every swatch falls inside its `coreRegion` on hue family, on chroma and on value.
+The value interval admits no exceptions, because every role including the support roles is sampled from its colour season's value interval; hue and chroma have four named exceptions between them and no general escape hatch.
 Denim and metal are the named hue exceptions, because they are drawn as support regions from outside the core families; base neutrals and secondary neutrals are the named chroma exceptions, because they sit at or below the core chroma floor by design.
 Negative controls prove each of these rejects a deliberately corrupted knowledge file rather than passing vacuously.
 
