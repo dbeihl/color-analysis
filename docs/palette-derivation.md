@@ -55,9 +55,9 @@ Samples outside sRGB after rounding are discarded, with no clipping, gamut mappi
 Only the Lab value is stored as the application colour; Munsell notation stays beside it as provenance and as its precise name.
 Hex may be computed later at render time.
 
-The next phase uses OKLab Euclidean distance for coarse person-to-colour-season scoring and CIEDE2000 for fine swatch-to-swatch matching.
+`src/resolver.ts` uses OKLab Euclidean distance for coarse person-to-colour-season scoring and CIEDE2000 for fine swatch-to-swatch matching.
 Those metrics have different purposes and are not interchangeable.
-This phase contains no classifier or palette resolver.
+The derivation described here contains no classifier or palette resolver; `docs/resolver.md` records the choices that one makes.
 The audit's mean CIELAB lightness, mean CIELCh D65 chroma and circular hue projection describe palette distributions; none estimates classification accuracy.
 `tests/fixtures/colour-reference.json` pins three source rows converted independently using Colour's XYZ-to-Lab implementation, covering a warm light sample, a blue sample and a high-chroma red-purple sample.
 The Culori output must agree with these references to four decimal places.
