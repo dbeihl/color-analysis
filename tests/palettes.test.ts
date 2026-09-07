@@ -169,6 +169,13 @@ it('detects a swatch drawn from outside the core value interval', () => {
   expect(() => assertCoreValueContainment(changed)).toThrow();
 });
 
+it('detects a swatch drawn above the core value interval', () => {
+  const changed = structuredClone(colorSeasons);
+  const entry = changed.find((season) => season.coreRegion.value[1] < 9)!;
+  entry.palette[0]!.munsell.value = entry.coreRegion.value[1] + 1;
+  expect(() => assertCoreValueContainment(changed)).toThrow(/to be less than or equal to/);
+});
+
 it('detects a palette whose warmth contradicts its declared hue axis', () => {
   const changed = structuredClone(colorSeasons);
   const spring = changed.find((entry) => entry.id === 'light-spring')!;
@@ -209,6 +216,13 @@ it('detects an accent drawn from outside the core chroma interval', () => {
   const entry = changed[0]!;
   entry.palette.find((swatch) => swatch.role === 'accent')!.munsell.chroma = entry.coreRegion.chroma[1] + 2;
   expect(() => assertCoreChromaContainment(changed)).toThrow();
+});
+
+it('detects an accent drawn below the core chroma interval', () => {
+  const changed = structuredClone(colorSeasons);
+  const entry = changed[0]!;
+  entry.palette.find((swatch) => swatch.role === 'accent')!.munsell.chroma = entry.coreRegion.chroma[0] - 2;
+  expect(() => assertCoreChromaContainment(changed)).toThrow(/to be greater than or equal to/);
 });
 
 it('detects an accent drawn from outside the core hue families', () => {
