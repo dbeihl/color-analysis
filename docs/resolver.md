@@ -24,6 +24,7 @@ Nothing else enters it. The declared axes in `seasons.json` are not consulted, a
 
 That metric leaves a season the winner does not declare as a neighbour inside the tolerance for 12 of the 36 fixtures and 44.2 percent of the 3,300 combinations of Monk skin swatch, natural hair colour and iris colour that generated them, and it reports `low-confidence` for 31 of 36.
 Twelve palettes of 48 swatches cover CIELAB densely enough that every palette holds something close to any sample, so the scores bunch.
+Put plainly: for mid-lightness colouring the classifier on its own barely tells the seasons apart, and version one hands that honest uncertainty to the blind comparison test by design, because a person's own eyes beside their own face are the instrument this tool trusts to settle it.
 
 ### Palette-agreement terms, evaluated and rejected
 
@@ -82,9 +83,13 @@ The two agree on every sample with a positive b*, which is the range the ITA lit
 
 ## Near-face ranking direction
 
-`rankPalette` puts the near-face swatches first and orders them by descending CIEDE2000 distance from the person's skin, so the colour least like their own skin leads.
+`rankPalette` puts the near-face swatches first and orders those by descending CIEDE2000 distance from the person's skin, so the colour least like their own skin leads.
 This is a practitioner rule of thumb with no evidential basis: the craft holds that a colour close to skin flattens a face rather than lifting it.
 The blind comparison test settles it for a given person, and this ordering only decides what that test shows first.
+
+The rule of thumb is about what sits beside a face, so it is applied to the near-face swatches and nowhere else.
+Every remaining swatch keeps the order the derivation script emits, which groups by role: the two metals, then the two denims, then the eight base neutrals, then the eight statements.
+That tail does not move when the skin sample changes, and a test pins its complete order against the committed palette.
 
 ## Golden fixtures
 
@@ -96,3 +101,4 @@ Each recorded `margin` is the exact tolerance at which that case starts contendi
 ## Inputs recorded but not yet used
 
 `skin.monkBand`, `hair.naturalLevel` and `hair.greyPercent` are validated and carried as deliberate seams for the later depth-banded makeup and hair-formula phases; version one records them without letting them move the answer.
+`ColoringFeatures` carries two measurements in the same position: `undertone.hueAngleDegrees` and `meanChroma` are computed on every call and nothing in the result reads them, since the palette-agreement terms that once did were evaluated and removed.
