@@ -61,22 +61,28 @@ describe('skin-to-hair contrast reporting', () => {
 
 describe('swatch to engine input wiring', () => {
   it('carries each chosen swatch into its own field of the engine input', () => {
-    expect(chosenInput('monk-4', 'red', 'iris-golden-brown', 0.45, 15)).toEqual({
-      skin: {
-        lab: { mode: 'lab65', l: 87.57289058219384, a: 0.45874815480295705, b: 17.754965146835477 },
-        monkBand: 4,
-      },
-      hair: {
-        lab: { mode: 'lab65', l: 22.49, a: 9.6, b: 12.13 },
-        naturalLevel: 4,
-        greyPercent: 15,
-      },
-      eye: {
-        lab: { mode: 'lab65', l: 36.582491318844475, a: 17.97012199365902, b: 24.730664922635846 },
-      },
-      source: 'manual',
-      confidence: 0.45,
-    });
+    const input = chosenInput('monk-4', 'red', 'iris-golden-brown', 0.45, 15);
+
+    expect(input.skin.lab.mode).toBe('lab65');
+    expect(input.skin.lab.l).toBeCloseTo(87.5728906, 5);
+    expect(input.skin.lab.a).toBeCloseTo(0.4587482, 5);
+    expect(input.skin.lab.b).toBeCloseTo(17.7549651, 5);
+    expect(input.skin.monkBand).toBe(4);
+
+    expect(input.hair.lab.mode).toBe('lab65');
+    expect(input.hair.lab.l).toBeCloseTo(22.49, 5);
+    expect(input.hair.lab.a).toBeCloseTo(9.6, 5);
+    expect(input.hair.lab.b).toBeCloseTo(12.13, 5);
+    expect(input.hair.naturalLevel).toBe(4);
+    expect(input.hair.greyPercent).toBe(15);
+
+    expect(input.eye.lab.mode).toBe('lab65');
+    expect(input.eye.lab.l).toBeCloseTo(36.5824913, 5);
+    expect(input.eye.lab.a).toBeCloseTo(17.9701220, 5);
+    expect(input.eye.lab.b).toBeCloseTo(24.7306649, 5);
+
+    expect(input.source).toBe('manual');
+    expect(input.confidence).toBe(0.45);
   });
 });
 

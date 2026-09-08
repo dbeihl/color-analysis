@@ -96,7 +96,7 @@ export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingEle
       </div>
 
       {result.warnings.length > 0 && (
-        <div aria-live="polite" className="mt-4 grid gap-3">
+        <div className="mt-4 grid gap-3">
           {result.warnings.map((warning) => (
             <article className="rounded-xl border-l-4 border-stone-950 bg-stone-100 p-5 text-stone-950" key={warning.code}>
               <h3 className="font-semibold">{sourceWarning(warning)}</h3>
