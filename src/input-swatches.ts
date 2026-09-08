@@ -1,5 +1,5 @@
 import { converter, formatHex } from 'culori';
-import type { Lab } from './domain/types';
+import type { ColoringInput, Lab } from './domain/types';
 
 export interface InputSwatch {
   id: string;
@@ -71,4 +71,25 @@ export function swatchHex(swatch: InputSwatch) {
   const color = swatch.lab ? toRgb(swatch.lab) : undefined;
   if (!color) throw new Error(`Missing display value for ${swatch.id}`);
   return formatHex(color);
+}
+
+export function toColoringInput(
+  skin: InputSwatch,
+  hair: InputSwatch,
+  eye: InputSwatch,
+  greyPercent: number,
+  confidence: number,
+): ColoringInput {
+  if (!skin.monkBand || !hair.naturalLevel) throw new Error('Input metadata is incomplete');
+  return {
+    skin: { lab: swatchLab(skin), monkBand: skin.monkBand as ColoringInput['skin']['monkBand'] },
+    hair: {
+      lab: swatchLab(hair),
+      naturalLevel: hair.naturalLevel as ColoringInput['hair']['naturalLevel'],
+      greyPercent,
+    },
+    eye: { lab: swatchLab(eye) },
+    source: 'manual',
+    confidence,
+  };
 }

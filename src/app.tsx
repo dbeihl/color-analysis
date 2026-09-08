@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { formatHex, converter } from 'culori';
-import { inputSwatches, swatchHex, swatchLab, type InputSwatch } from './input-swatches';
+import { inputSwatches, swatchHex, toColoringInput, type InputSwatch } from './input-swatches';
 import { resolveColoring } from './resolver';
-import type { ColoringInput, StyleProfile, Warning } from './domain/types';
+import type { PaletteEntry, StyleProfile, Warning } from './domain/types';
+
+const SETTLED_CONFIDENCE = 0.5;
 
 const toRgb = converter('rgb');
 
@@ -38,9 +40,7 @@ function confidenceBasis(result: StyleProfile) {
   }
 }
 
-function paletteHex(result: StyleProfile, index: number) {
-  const entry = result.palette[index];
-  if (!entry) throw new Error('Missing palette entry');
+function paletteHex(entry: PaletteEntry) {
   const color = toRgb(entry.lab);
   if (!color) throw new Error(`Unable to display ${entry.name}`);
   return formatHex(color);
@@ -70,7 +70,7 @@ function SwatchChoice({
       <span aria-hidden="true" className="mb-3 block h-10 rounded-md border border-black/10" style={{ backgroundColor: swatchHex(option) }} />
       <span className="flex items-center justify-between gap-2 text-sm font-semibold text-stone-900">
         {option.name}
-        <span className="hidden text-xs font-medium peer-checked:inline">Selected</span>
+        <span className="hidden text-xs font-medium group-has-[:checked]:inline">Selected</span>
       </span>
     </label>
   );
@@ -79,6 +79,7 @@ function SwatchChoice({
 export function Result({ result }: { result: StyleProfile }) {
   const unreliable = result.warnings.some(({ code }) => code === 'low-confidence' || code === 'conflicting-signals');
   const confidence = Math.round(result.colorSeason.confidence.value * 100);
+  const unsettled = result.warnings.length > 0 || result.colorSeason.confidence.value < SETTLED_CONFIDENCE;
 
   return (
     <section aria-labelledby="result-heading" className="mt-12 border-t border-stone-300 pt-10">
@@ -95,7 +96,7 @@ export function Result({ result }: { result: StyleProfile }) {
       </div>
 
       {result.warnings.length > 0 && (
-        <div aria-live="polite" className="mt-4 grid gap-3" role="alert">
+        <div aria-live="polite" className="mt-4 grid gap-3">
           {result.warnings.map((warning) => (
             <article className="rounded-xl border-l-4 border-stone-950 bg-stone-100 p-5 text-stone-950" key={warning.code}>
               <h3 className="font-semibold">{sourceWarning(warning)}</h3>
@@ -109,6 +110,7 @@ export function Result({ result }: { result: StyleProfile }) {
         <article className="rounded-2xl border border-stone-300 bg-white p-6">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-stone-600">Suggested season</p>
           <h3 className="mt-2 text-4xl font-semibold tracking-tight text-stone-950">{titleCase(result.colorSeason.primary)}</h3>
+          <p className="mt-4 leading-7 text-stone-700">Version one leans heavily toward a few seasons, because of how the reference colours behind these choices were measured. That is known and is being worked on, so read this season as a suggestion rather than a finding.</p>
           <p className="mt-5 text-lg leading-8 text-stone-700">Skin-to-hair contrast: <strong className="font-semibold text-stone-950">{titleCase(result.contrastLevel)}</strong>.</p>
           <p className="mt-3 leading-7 text-stone-600">This is the numeric lightness gap between the two references you chose, and it is not a reading of how you look. The hair references were measured under a different geometry than the skin references and read darker than hair appears, so a light skin reference reports high contrast even against the palest hair reference.</p>
         </article>
@@ -126,10 +128,12 @@ export function Result({ result }: { result: StyleProfile }) {
         </article>
       )}
 
-      <article className="mt-6 rounded-2xl border border-stone-300 bg-white p-6">
-        <h3 className="text-xl font-semibold text-stone-950">What would settle this</h3>
-        <p className="mt-2 max-w-3xl leading-7 text-stone-700">Compare two candidate colours side by side against your own face in one photograph, so both colours share the same light. That blind comparison is the intended next step, but it is not built yet. It will belong here when it is ready.</p>
-      </article>
+      {unsettled && (
+        <article className="mt-6 rounded-2xl border border-stone-300 bg-white p-6">
+          <h3 className="text-xl font-semibold text-stone-950">What would settle this</h3>
+          <p className="mt-2 max-w-3xl leading-7 text-stone-700">Compare two candidate colours side by side against your own face in one photograph, so both colours share the same light. That blind comparison is the intended next step, but it is not built yet. It will belong here when it is ready.</p>
+        </article>
+      )}
 
       <section aria-labelledby="palette-heading" className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -142,7 +146,7 @@ export function Result({ result }: { result: StyleProfile }) {
         <ol className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-3">
           {result.palette.map((entry, index) => (
             <li className="overflow-hidden rounded-xl border border-stone-300 bg-white" key={`${entry.name}-${index}`}>
-              <div aria-hidden="true" className="h-20" style={{ backgroundColor: paletteHex(result, index) }} />
+              <div aria-hidden="true" className="h-20" style={{ backgroundColor: paletteHex(entry) }} />
               <div className="p-3">
                 <p className="font-semibold text-stone-950">{entry.name}</p>
                 <p className="mt-1 text-sm text-stone-600">{titleCase(entry.role)}{entry.nearFace ? ' · Near-face' : ''}</p>
@@ -171,22 +175,13 @@ export function App() {
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const skin = chosen(inputSwatches.skin, skinId);
-    const hair = chosen(inputSwatches.hair, hairId);
-    const eye = chosen(inputSwatches.eye, eyeId);
-    if (!skin.monkBand || !hair.naturalLevel) throw new Error('Input metadata is incomplete');
-    const input: ColoringInput = {
-      skin: { lab: swatchLab(skin), monkBand: skin.monkBand as ColoringInput['skin']['monkBand'] },
-      hair: {
-        lab: swatchLab(hair),
-        naturalLevel: hair.naturalLevel as ColoringInput['hair']['naturalLevel'],
-        greyPercent,
-      },
-      eye: { lab: swatchLab(eye) },
-      source: 'manual',
+    setResult(resolveColoring(toColoringInput(
+      chosen(inputSwatches.skin, skinId),
+      chosen(inputSwatches.hair, hairId),
+      chosen(inputSwatches.eye, eyeId),
+      greyPercent,
       confidence,
-    };
-    setResult(resolveColoring(input));
+    )));
   }
 
   return (
