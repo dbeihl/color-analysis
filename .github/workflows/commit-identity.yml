@@ -38,7 +38,8 @@ jobs:
               echo "Commit $sha has author email '$author_email', expected '$ALLOWED'"
               FAILED=1
             fi
-            if [ "$committer_email" != "$ALLOWED" ]; then
+            parents=$(git log -1 --format='%P' "$sha")
+            if [ "$committer_email" != "$ALLOWED" ] && ! { [ "$committer_email" = "noreply@github.com" ] && [[ "$parents" = *" "* ]]; }; then
               echo "Commit $sha has committer email '$committer_email', expected '$ALLOWED'"
               FAILED=1
             fi
@@ -46,3 +47,6 @@ jobs:
           if [ "$FAILED" -ne 0 ]; then
             exit 1
           fi
+
+      - name: Prove identity guard accepts and rejects the right commits
+        run: node scripts/test-commit-identity.mjs
