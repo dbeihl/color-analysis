@@ -15,3 +15,12 @@ describe('input swatch translation', () => {
     expect(swatchHex({ ...skin, hex: undefined, lab: swatchLab(skin) })).toBe('#f6ede4');
   });
 });
+
+describe('hair reference levels', () => {
+  it('orders naturalLevel by measured lightness', () => {
+    const byLightness = [...inputSwatches.hair].sort((a, b) => swatchLab(a).l - swatchLab(b).l);
+    const levels = byLightness.map(({ naturalLevel }) => naturalLevel);
+    expect(levels).toEqual([...levels].sort((a, b) => a - b));
+    expect(new Set(levels).size).toBe(levels.length);
+  });
+});

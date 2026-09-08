@@ -29,12 +29,12 @@ const skinReferences: Array<[string, string, string]> = [
 const hairReferences: Array<[string, string, number, number, number, number]> = [
   ['black', 'Black', 11.5, 4.08, -0.19, 1],
   ['dark-brown', 'Dark brown', 14.55, 2.52, 3.66, 2],
-  ['medium-brown', 'Medium brown', 18.58, 4.02, 6.75, 4],
+  ['medium-brown', 'Medium brown', 18.58, 4.02, 6.75, 3],
   ['light-brown', 'Light brown', 24.87, 3.21, 7.38, 5],
   ['dark-blond', 'Dark blond', 25.84, 4.22, 5.98, 6],
   ['blond', 'Blond', 42.06, 5.28, 12.7, 8],
   ['strawberry-blond', 'Strawberry blond', 37.8, 7.71, 17.09, 7],
-  ['red', 'Red', 22.49, 9.6, 12.13, 3],
+  ['red', 'Red', 22.49, 9.6, 12.13, 4],
 ];
 
 const eyeReferences: Array<[string, string, string]> = [
