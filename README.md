@@ -18,3 +18,4 @@ It deploys to GitHub Pages as a project page, from this public repository.
 **This repository is public by deliberate choice, made twice. Everything committed to it is readable by anyone.** Do not paste anything here you would not want public.
 
 Stood up 2026-09-07. Personal repository under the dbeihl account, not the Utilicast work account.
+
