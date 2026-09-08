@@ -23,3 +23,7 @@ Natural hair level and grey percentage are passed through exactly as selected. `
 ## When the page offers the side-by-side next step
 
 The result shows "What would settle this" when the resolver raises any warning at all, or when the reported confidence is below 0.5. A result at or above 0.5 with no warning is the only case that omits it. `tests/app.test.tsx` pins both sides of that boundary.
+
+## Reaching the result without a mouse
+
+Submitting the form moves focus to the result heading, which carries `tabIndex={-1}` for that purpose. The result mounts below a long form, so without this a keyboard or screen-reader user gets no signal that anything happened. Focus is the single mechanism the page uses: a live region inserted at the same moment as its own content is not reliably announced, and moving focus reads the heading, the confidence, and the uncertainty copy in their written order rather than lifting one fragment out of it. `tests/result-focus.test.tsx` pins it across the first submission and every resubmission.

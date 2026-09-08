@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type Ref } from 'react';
 import { formatHex, converter } from 'culori';
 import { inputSwatches, swatchHex, toColoringInput, type InputSwatch } from './input-swatches';
 import { resolveColoring } from './resolver';
@@ -76,7 +76,7 @@ function SwatchChoice({
   );
 }
 
-export function Result({ result }: { result: StyleProfile }) {
+export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingElement>; result: StyleProfile }) {
   const unreliable = result.warnings.some(({ code }) => code === 'low-confidence' || code === 'conflicting-signals');
   const confidence = Math.round(result.colorSeason.confidence.value * 100);
   const unsettled = result.warnings.length > 0 || result.colorSeason.confidence.value < SETTLED_CONFIDENCE;
@@ -85,7 +85,7 @@ export function Result({ result }: { result: StyleProfile }) {
     <section aria-labelledby="result-heading" className="mt-12 border-t border-stone-300 pt-10">
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-600">Your result</p>
       <div className={`mt-3 rounded-2xl border p-6 ${unreliable ? 'border-stone-950 bg-stone-950 text-white' : 'border-stone-300 bg-white text-stone-950'}`}>
-        <h2 id="result-heading" className="text-3xl font-semibold tracking-tight">
+        <h2 id="result-heading" className="text-3xl font-semibold tracking-tight" ref={headingRef} tabIndex={-1}>
           {unreliable ? 'This is not a reliable answer' : 'A provisional match'}
         </h2>
         <p className={`mt-3 max-w-2xl text-lg leading-8 ${unreliable ? 'text-stone-100' : 'text-stone-700'}`}>
@@ -172,6 +172,11 @@ export function App() {
   const [greyPercent, setGreyPercent] = useState(0);
   const [confidence, setConfidence] = useState(confidenceChoices[0]!.value);
   const [result, setResult] = useState<StyleProfile>();
+  const resultHeading = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    resultHeading.current?.focus();
+  }, [result]);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -242,7 +247,7 @@ export function App() {
         <button className="mt-12 min-h-12 rounded-xl bg-stone-950 px-6 py-3 font-semibold text-white transition hover:bg-stone-700 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-stone-950" type="submit">See the suggestion</button>
       </form>
 
-      {result && <Result result={result} />}
+      {result && <Result headingRef={resultHeading} result={result} />}
 
       <footer className="mt-16 border-t border-stone-300 pt-6 text-sm leading-6 text-stone-600">Reference sources and the colour-space translation are documented in <a className="font-semibold underline underline-offset-4 hover:text-stone-950" href="https://github.com/dbeihl/color-analysis/blob/main/docs/input-swatches.md">the project documentation</a>.</footer>
     </main>
