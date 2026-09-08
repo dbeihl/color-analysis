@@ -2,6 +2,8 @@ name: Commit identity guard
 
 on:
   pull_request:
+  push:
+    branches: [main]
 
 jobs:
   check-identity:
@@ -12,11 +14,24 @@ jobs:
           fetch-depth: 0
 
       - name: Check author and committer email on every commit
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
         run: |
           set -e
           ALLOWED="51423378+dbeihl@users.noreply.github.com"
           FAILED=0
-          for sha in $(git rev-list origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}); do
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            COMMITS=$(git rev-list "origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}")
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "No usable 'before' commit (first push or force-push); checking only the pushed commit."
+            COMMITS=$(git rev-list -1 "$AFTER")
+          else
+            COMMITS=$(git rev-list "$BEFORE..$AFTER")
+          fi
+
+          for sha in $COMMITS; do
             author_email=$(git log -1 --format='%ae' "$sha")
             committer_email=$(git log -1 --format='%ce' "$sha")
             if [ "$author_email" != "$ALLOWED" ]; then
