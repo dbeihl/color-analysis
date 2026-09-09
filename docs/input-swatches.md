@@ -60,7 +60,7 @@ Submitting the form moves focus to the result heading, which carries `tabIndex={
 
 **This change ships the provenance audit and characterises the known season collapse. No new colour is shipped, the page is untouched, and the distribution is unchanged. Replacement values remain unresolved.** This is a bounded literature search result, not a claim that suitable data cannot exist.
 
-The work followed three checks: reproduce the existing picker through its actual translator and resolver; inspect published measurements for comparable appearance and population coverage; adopt only traceable values, then repeat the same sweep and inspect the rendered picker. The third step could not proceed. Resolver scoring and season records remain unchanged.
+The work followed three checks: reproduce the existing picker through its actual translator and resolver; inspect published measurements for comparable appearance and population coverage; adopt only traceable values, then repeat the same sweep and inspect the rendered picker. No values passed the source checks, so nothing was adopted; the repeated sweep and the rendered-picker measurement below record the unchanged state rather than a repair. Resolver scoring and season records remain unchanged.
 
 ### Source decisions
 
@@ -162,4 +162,4 @@ The sweep passes only while its measured distribution matches the recorded defec
 
 ### Parked by decision, 2026-09-09
 
-The repository owner read this audit and parked the reference repair as low priority, to be picked up later. The gap is therefore known and deliberate rather than unnoticed. The picker still asks for a choice against references that do not match their labels and offer no blue, green, grey, hazel or mixed iris, and the sweep above records what that produces. Whoever picks this up next starts from the source table, the exact gaps and the commensurability decision recorded here rather than repeating the search; one of the open routes is a restricted-data request that only the captain can send in his own name.
+The repository owner read this audit and parked the reference repair as low priority, to be picked up later. The gap is therefore known and deliberate rather than unnoticed. The picker still asks for a choice against hair references whose displayed colours do not match their labels, and against eye references that are all brown from a single example iris with no blue, green, grey, hazel or mixed option, and the sweep above records what that produces. Whoever picks this up next starts from the source table, the exact gaps and the commensurability decision recorded here rather than repeating the search; one of the open routes is a restricted-data request that only the captain can send in his own name.
