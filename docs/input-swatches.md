@@ -38,7 +38,7 @@ Correction to what this project claimed: the repository described these values a
 | Chestnut | 9 | 104, 59, 34 | #683b22 |
 | Muted brown | 10 | 98, 74, 70 | #624a46 |
 
-The wider study analysed 100 valid Korean iris photographs from 145 ophthalmology patients, which is where the hundred-eye claim came from. The shipped values come from the single example iris of Table 1 rather than from a sample across that cohort. Capture used a BQ-900 slit lamp about 10 cm away in a dark environment; JPEG RGB was assumed to be sRGB. The representative-colour method excluded L* ≥ 50 highlights. It lacks non-brown coverage and demonstrated appearance calibration to MST.
+The wider study analysed 100 valid Korean iris photographs from 145 ophthalmology patients, which is where the hundred-eye claim came from. The shipped values come from the single example iris of Table 1 rather than from a sample across that cohort. Capture used a BQ-900 slit lamp about 10 cm away in a dark environment; JPEG RGB was assumed to be sRGB. The representative-colour method excluded L* ≥ 50 highlights. It lacks both non-brown coverage and any demonstrated appearance calibration to MST.
 
 ## Colour-space path
 
