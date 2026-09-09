@@ -50,12 +50,15 @@ describe('result honesty for a capped but unwarned answer', () => {
 });
 
 describe('skin-to-hair contrast reporting', () => {
-  it('qualifies the contrast level with the reference mismatch that produces it', () => {
+  it('describes numeric contrast and limits the season claim without promising repairs', () => {
     const result = resolveColoring(chosenInput('monk-1', 'blond', 'iris-chestnut', 0.8));
     expect(result.contrastLevel).toBe('high');
     const html = renderToStaticMarkup(<Result result={result} />);
     expect(html).toContain('Skin-to-hair contrast');
-    expect(html).toContain('measured under a different geometry than the skin references');
+    expect(html).toContain('This is the numeric lightness gap between the two references you chose, and it is not a reading of how you look.');
+    expect(html).toContain('Version one leans heavily toward a few seasons, so read this season as a suggestion rather than a finding.');
+    expect(html).not.toContain('being worked on');
+    expect(html).not.toContain('measured under a different geometry');
   });
 });
 
