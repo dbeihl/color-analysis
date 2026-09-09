@@ -81,6 +81,18 @@ What this costs, accepted rather than disputed: GitHub Pages cannot send the cro
 Its bandwidth allowance is a soft ceiling rather than unmetered.
 Both are accepted consequences of his choice.
 
+## 6. Version one ships on the existing hair and eye references, with the repair parked
+
+Decided by: the captain.
+Date: 2026-09-09.
+His words: paraphrased rather than quoted. He read the provenance audit and told the fleet to store it in this repository and pick the repair up later, because it is not a priority now.
+
+What ships: the hair and eye reference sets already in the code, whose displayed colours disagree with the labels they carry, and an eye picker offering no blue, green, grey, hazel or mixed iris option.
+
+This is a deliberate decision rather than an oversight. The gap was measured before it was accepted.
+
+The evidence, the two provenance corrections (the hair anchors are eight individual participants rather than category means, and the eye values come from ten clusters of a single example iris rather than a hundred Korean eyes), the exact missing coverage and the sweep results are recorded in [docs/input-swatches.md](docs/input-swatches.md).
+
 ## Settled by the research, not open to reinterpretation
 
 - Palette colours are derived from the openly licensed Munsell renotation data, defining each season as a region in Munsell hue/value/chroma space, and are never copied from any commercial colour system. Colours themselves cannot be owned; a curated arrangement may be.
