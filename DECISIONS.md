@@ -88,7 +88,7 @@ Decided by: the captain.
 Date: 2026-09-09.
 His words: paraphrased rather than quoted. He read the provenance audit and told the fleet to store it in this repository and pick the repair up later, because it is not a priority now.
 
-What ships: the hair and eye reference sets already in the code, whose displayed colours disagree with the labels they carry, and an eye picker offering no blue, green, grey, hazel or mixed iris option.
+What ships: the hair and eye reference sets already in the code, failing in two different ways. The hair swatches display colours that disagree with the labels they carry. The eye swatches match their labels, but every one of them is a shade of brown taken from a single example iris, so there is no blue, green, grey, hazel or mixed option and one iris stands in for a population.
 
 This is a deliberate decision rather than an oversight. The gap was measured before it was accepted.
 
