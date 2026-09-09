@@ -42,7 +42,7 @@ it('characterises the known season collapse across every picker combination', ()
   expect(conflictingSignals).toBe(147);
 });
 
-it('pins the closest pair of rendered hair swatches, which is below a useful distinguishability margin', () => {
+it('pins the closest pair of rendered hair swatches and its CIEDE2000 distance', () => {
   const difference = differenceCiede2000();
   const rendered = inputSwatches.hair.map((swatch) => ({ id: swatch.id, hex: swatchHex(swatch) }));
   const pairs = rendered.flatMap((a, index) => rendered.slice(index + 1).map((b) => ({
