@@ -1,6 +1,7 @@
 # Decisions
 
-Durable record of scope decisions for version one, made before any code was written.
+Durable record of scope decisions for version one.
+Every entry is dated: the first ones were taken before any code was written, and later ones record decisions taken against evidence produced by the shipped product.
 Quotes marked "relayed" are the captain's words as relayed through the fleet, not a verbatim transcript.
 Where no words of his exist, the reasoning is the fleet's own.
 
@@ -80,6 +81,18 @@ The build configuration itself is not created in this task; only the decision is
 What this costs, accepted rather than disputed: GitHub Pages cannot send the cross-origin isolation headers, so multi-threaded WebAssembly is unavailable to the deferred photo work without a service-worker workaround.
 Its bandwidth allowance is a soft ceiling rather than unmetered.
 Both are accepted consequences of his choice.
+
+## 6. Version one ships on the existing hair and eye references, with the repair parked
+
+Decided by: the captain.
+Date: 2026-09-09.
+His words: paraphrased rather than quoted. He read the provenance audit and told the fleet to store it in this repository and pick the repair up later, because it is not a priority now.
+
+What ships: the hair and eye reference sets already in the code, failing in two different ways. The hair swatches display colours that disagree with the labels they carry. The eye swatches match their labels, but every one of them is a shade of brown taken from a single example iris, so there is no blue, green, grey, hazel or mixed option and one iris stands in for a population.
+
+This is a deliberate decision rather than an oversight. The gap was measured before it was accepted.
+
+The evidence, the two provenance corrections (the hair anchors are eight individual participants rather than category means, and the eye values come from ten clusters of a single example iris rather than a hundred Korean eyes), the exact missing coverage and the sweep results are recorded in [docs/input-swatches.md](docs/input-swatches.md).
 
 ## Settled by the research, not open to reinterpretation
 
