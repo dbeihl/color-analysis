@@ -158,7 +158,7 @@ Stated precisely, because the aggregate version of this sentence is wrong: seven
 
 ### Validation of this audit
 
-The sweep passes only while its measured distribution matches the recorded defect. Temporarily omitting one eye reference from the test loop produced exit 1 with `AssertionError: expected 560 to be 640`; restoring the loop returned the suite to green. A future repair must provide sourced values and new before/after evidence rather than treating this baseline as a target. The shipped diff is this document plus `tests/input-sweep.test.ts`: no colour value, resolver behaviour, season record, existing test or page changes.
+The sweep passes only while its measured distribution matches the recorded defect. Temporarily omitting one eye reference from the test loop produced exit 1 with `AssertionError: expected 560 to be 640`; restoring the loop returned the suite to green. A future repair must provide sourced values and new before/after evidence rather than treating this baseline as a target. The shipped diff is this document, `tests/input-sweep.test.ts` and the park entry added to `DECISIONS.md`: no colour value, resolver behaviour, season record, existing test or page changes.
 
 ### Parked by decision, 2026-09-09
 

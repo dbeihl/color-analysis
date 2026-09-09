@@ -1,6 +1,7 @@
 # Decisions
 
-Durable record of scope decisions for version one, made before any code was written.
+Durable record of scope decisions for version one.
+Every entry is dated: the first ones were taken before any code was written, and later ones record decisions taken against evidence produced by the shipped product.
 Quotes marked "relayed" are the captain's words as relayed through the fleet, not a verbatim transcript.
 Where no words of his exist, the reasoning is the fleet's own.
 
