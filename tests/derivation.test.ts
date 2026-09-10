@@ -3,9 +3,12 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { expect, it } from 'vitest';
 import { colorSeasons } from '../src/knowledge/load';
+import { resolvePython } from '../scripts/python-environment.mjs';
 import references from './fixtures/colour-reference.json';
 
-const python = resolve('.venv/bin/python');
+const environment = resolvePython(resolve('.'));
+const python = 'python' in environment ? environment.python : undefined;
+const derivationTest = python ? it : it.skip;
 const script = resolve('scripts/derive-palettes.py');
 
 it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
@@ -22,19 +25,19 @@ it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
   }
 });
 
-it('reproduces every swatch twice from the pinned source and detects edited output', () => {
+derivationTest('reproduces every swatch twice from the pinned source and detects edited output (requires Python; run: python3.13 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt)', () => {
   const directory = mkdtempSync(resolve('.palette-test-'));
   const output = join(directory, 'seasons.json');
   try {
-    execFileSync(python, [script, '--output', output], { encoding: 'utf8' });
+    execFileSync(python!, [script, '--output', output], { encoding: 'utf8' });
     const first = readFileSync(output);
     expect(first.equals(readFileSync(resolve('src/knowledge/seasons.json')))).toBe(true);
-    execFileSync(python, [script, '--output', output], { encoding: 'utf8' });
+    execFileSync(python!, [script, '--output', output], { encoding: 'utf8' });
     expect(readFileSync(output).equals(first)).toBe(true);
     const corrupted = JSON.parse(first.toString());
     corrupted[0].palette[0].lab.l += 0.01;
     writeFileSync(output, JSON.stringify(corrupted, null, 2) + '\n');
-    expect(() => execFileSync(python, [script, '--check', '--output', output], {
+    expect(() => execFileSync(python!, [script, '--check', '--output', output], {
       encoding: 'utf8', stdio: 'pipe',
     })).toThrow('seasons.json differs from pinned Munsell derivation');
   } finally {

@@ -19,4 +19,17 @@ It deploys to GitHub Pages as a project page from this public repository, at htt
 
 **This repository is public by deliberate choice, made twice. Everything committed to it is readable by anyone.** Do not paste anything here you would not want public.
 
+## Setup
+
+Use Node.js 22.12.0 and Python 3.13, then run:
+
+```sh
+npm ci
+python3.13 -m venv .venv
+.venv/bin/pip install -r scripts/requirements.txt
+npm test
+```
+
+The palette derivation test runs when the Python environment is present. To regenerate or check the committed palette data, use `npm run derive` or `npm run derive:check` after the same setup.
+
 Stood up 2026-09-07. Personal repository under the dbeihl account, not the Utilicast work account.
