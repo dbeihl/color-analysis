@@ -37,7 +37,7 @@ it('returns the virtualenv interpreter when it can import the derivation modules
 it('names the setup command when the interpreter cannot import the derivation modules', () => {
   const { root } = projectWithInterpreter(failingInterpreter);
   try {
-    expect(resolvePython(root)).toEqual({ message: setupMessage });
+    expect(resolvePython(root, {})).toEqual({ message: setupMessage, fatal: false });
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -46,7 +46,17 @@ it('names the setup command when the interpreter cannot import the derivation mo
 it('names the setup command when the project has no virtualenv interpreter', () => {
   const root = mkdtempSync(resolve('.python-environment-'));
   try {
-    expect(resolvePython(root)).toEqual({ message: setupMessage });
+    expect(resolvePython(root, {})).toEqual({ message: setupMessage, fatal: false });
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+it('makes the missing environment fatal in CI and skippable outside it', () => {
+  const root = mkdtempSync(resolve('.python-environment-'));
+  try {
+    expect(resolvePython(root, { CI: 'true' })).toEqual({ message: setupMessage, fatal: true });
+    expect(resolvePython(root, {})).toEqual({ message: setupMessage, fatal: false });
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

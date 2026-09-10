@@ -1,20 +1,17 @@
 import { spawnSync } from 'node:child_process';
-import { accessSync, constants } from 'node:fs';
 import { join } from 'node:path';
 
 export const pythonSetupCommand =
   'python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt';
 
-export function resolvePython(projectRoot) {
+export function resolvePython(projectRoot, env = process.env) {
   const python = join(projectRoot, '.venv', 'bin', 'python');
-  const missing = {
-    message: `Python environment missing for the palette derivation. Run: ${pythonSetupCommand}`,
-  };
-  try {
-    accessSync(python, constants.X_OK);
-  } catch {
-    return missing;
-  }
   const probe = spawnSync(python, ['-c', 'import colour, numpy'], { stdio: 'ignore' });
-  return probe.status === 0 ? { python } : missing;
+  if (probe.status === 0) {
+    return { python };
+  }
+  return {
+    message: `Python environment missing for the palette derivation. Run: ${pythonSetupCommand}`,
+    fatal: Boolean(env.CI),
+  };
 }

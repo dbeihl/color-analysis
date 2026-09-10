@@ -8,7 +8,7 @@ import references from './fixtures/colour-reference.json';
 
 const environment = resolvePython(resolve('.'));
 const python = 'python' in environment ? environment.python : undefined;
-const derivationTest = python ? it : it.skip;
+const derivationTest = 'message' in environment && !environment.fatal ? it.skip : it;
 const script = resolve('scripts/derive-palettes.py');
 
 if ('message' in environment) {
@@ -30,6 +30,9 @@ it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
 });
 
 derivationTest('reproduces every swatch twice from the pinned source and detects edited output (requires Python)', () => {
+  if ('message' in environment) {
+    throw new Error(environment.message);
+  }
   const directory = mkdtempSync(resolve('.palette-test-'));
   const output = join(directory, 'seasons.json');
   try {
