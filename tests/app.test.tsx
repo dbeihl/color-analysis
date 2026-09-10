@@ -37,7 +37,7 @@ describe('result uncertainty', () => {
     for (const warning of result.warnings) expect(html).toContain(warning.message);
     expect(html).toContain('What would settle this');
     expect(html).toContain('A contradiction produced this percentage: a palette the system treats as incompatible scored just as well, so this is an unreliable answer. It is not a chance of being right about you.');
-    expect(html).not.toContain('confidence');
+    expect(html).not.toMatch(/confidence/i);
   });
 });
 
@@ -48,7 +48,7 @@ describe('result honesty for a capped but unwarned answer', () => {
     const html = renderToStaticMarkup(<Result result={result} />);
     expect(html).toContain('What would settle this');
     expect(html).toContain('Your own stated certainty about the swatch matches produced this percentage. It is not a measurement of the palettes or a chance of being right about you.');
-    expect(html).not.toContain('confidence');
+    expect(html).not.toMatch(/confidence/i);
   });
 });
 
@@ -59,7 +59,7 @@ describe('score separation reporting', () => {
 
     expect(html).toContain('Score separation');
     expect(html).toContain('The gap between the two closest palette scores produced this percentage. It is not a chance of being right about you.');
-    expect(html).not.toContain('confidence');
+    expect(html).not.toMatch(/confidence/i);
   });
 });
 

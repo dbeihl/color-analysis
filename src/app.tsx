@@ -189,7 +189,7 @@ export function App() {
       <header className="max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-600">Colour analysis</p>
         <h1 className="mt-4 text-4xl font-semibold tracking-tight text-stone-950 sm:text-6xl">A starting point, not a verdict.</h1>
-        <p className="mt-6 text-lg leading-8 text-stone-700">Choose the closest references you can recognise. The resolver will suggest a season, show its confidence honestly, and put its palette in comparison order.</p>
+        <p className="mt-6 text-lg leading-8 text-stone-700">Choose the closest references you can recognise. The resolver will suggest a season, show its score separation honestly, and put its palette in comparison order.</p>
       </header>
 
       <form className="mt-12" onSubmit={submit}>
@@ -228,7 +228,7 @@ export function App() {
 
         <fieldset className="mt-12">
           <legend className="text-2xl font-semibold tracking-tight text-stone-950">5. How well did the references match you?</legend>
-          <p className="mt-2 max-w-3xl leading-7 text-stone-700">A low answer caps the result’s confidence. It does not mean you chose badly; it tells the resolver the available references did not describe you well enough.</p>
+          <p className="mt-2 max-w-3xl leading-7 text-stone-700">A low answer caps the result’s score separation. It does not mean you chose badly; it tells the resolver the available references did not describe you well enough.</p>
           <div className="mt-5 grid gap-3">
             {confidenceChoices.map((choice) => (
               <label className="flex cursor-pointer gap-4 rounded-xl border border-stone-300 bg-white p-5 has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-stone-900/20 has-[:checked]:border-stone-950" key={choice.value}>
