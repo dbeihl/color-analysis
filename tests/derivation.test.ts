@@ -3,10 +3,16 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { expect, it } from 'vitest';
 import { colorSeasons } from '../src/knowledge/load';
+import { resolvePython } from '../scripts/python-environment.mjs';
 import references from './fixtures/colour-reference.json';
 
-const python = resolve('.venv/bin/python');
+const environment = resolvePython(resolve('.'));
+const derivationTest = 'message' in environment ? it.skip : it;
 const script = resolve('scripts/derive-palettes.py');
+
+if ('message' in environment) {
+  console.log(environment.message);
+}
 
 it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
   for (const reference of references) {
@@ -22,19 +28,22 @@ it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
   }
 });
 
-it('reproduces every swatch twice from the pinned source and detects edited output', () => {
+derivationTest('reproduces every swatch twice from the pinned source and detects edited output (requires Python)', () => {
+  if ('message' in environment) {
+    throw new Error(environment.message);
+  }
   const directory = mkdtempSync(resolve('.palette-test-'));
   const output = join(directory, 'seasons.json');
   try {
-    execFileSync(python, [script, '--output', output], { encoding: 'utf8' });
+    execFileSync(environment.python, [script, '--output', output], { encoding: 'utf8' });
     const first = readFileSync(output);
     expect(first.equals(readFileSync(resolve('src/knowledge/seasons.json')))).toBe(true);
-    execFileSync(python, [script, '--output', output], { encoding: 'utf8' });
+    execFileSync(environment.python, [script, '--output', output], { encoding: 'utf8' });
     expect(readFileSync(output).equals(first)).toBe(true);
     const corrupted = JSON.parse(first.toString());
     corrupted[0].palette[0].lab.l += 0.01;
     writeFileSync(output, JSON.stringify(corrupted, null, 2) + '\n');
-    expect(() => execFileSync(python, [script, '--check', '--output', output], {
+    expect(() => execFileSync(environment.python, [script, '--check', '--output', output], {
       encoding: 'utf8', stdio: 'pipe',
     })).toThrow('seasons.json differs from pinned Munsell derivation');
   } finally {

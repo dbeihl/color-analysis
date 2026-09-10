@@ -11,8 +11,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run --disableConsoleIntercept",
-    "derive": ".venv/bin/python scripts/derive-palettes.py",
-    "derive:check": ".venv/bin/python scripts/derive-palettes.py --check"
+    "derive": "node scripts/run-python.mjs scripts/derive-palettes.py",
+    "derive:check": "node scripts/run-python.mjs scripts/derive-palettes.py --check"
   },
   "dependencies": {
     "culori": "4.0.2",
