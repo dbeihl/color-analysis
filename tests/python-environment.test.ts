@@ -4,7 +4,7 @@ import { expect, it } from 'vitest';
 import { resolvePython } from '../scripts/python-environment.mjs';
 
 const setupMessage =
-  'Python environment missing for the palette derivation. Run: python3.13 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt';
+  'Python environment missing for the palette derivation. Run: python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt';
 
 const importingInterpreter = `#!/bin/sh
 [ "$1" = "-c" ] && [ "$2" = "import colour, numpy" ] && exit 0

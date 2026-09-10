@@ -3,7 +3,7 @@ import { accessSync, constants } from 'node:fs';
 import { join } from 'node:path';
 
 export const pythonSetupCommand =
-  'python3.13 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt';
+  'python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt';
 
 export function resolvePython(projectRoot) {
   const python = join(projectRoot, '.venv', 'bin', 'python');
