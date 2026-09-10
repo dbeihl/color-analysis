@@ -21,7 +21,7 @@ It deploys to GitHub Pages as a project page from this public repository, at htt
 
 ## Setup
 
-Use Node.js 22.12.0 and Python 3.11 through 3.13, then run:
+Use Node.js 22.12 or newer and Python 3.11 through 3.13, then run:
 
 ```sh
 npm ci
