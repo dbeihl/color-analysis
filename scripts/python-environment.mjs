@@ -7,7 +7,9 @@ export const pythonSetupCommand =
 
 export function resolvePython(projectRoot) {
   const python = join(projectRoot, '.venv', 'bin', 'python');
-  const missing = { message: `Python environment missing. Run: ${pythonSetupCommand}` };
+  const missing = {
+    message: `Python environment missing for the palette derivation. Run: ${pythonSetupCommand}`,
+  };
   try {
     accessSync(python, constants.X_OK);
   } catch {
