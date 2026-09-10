@@ -1,5 +1,5 @@
 export const pythonSetupCommand: string;
 
-export function resolvePython(projectRoot: string, env?: NodeJS.ProcessEnv):
+export function resolvePython(projectRoot: string):
   | { python: string }
-  | { message: string; fatal: boolean };
+  | { message: string };

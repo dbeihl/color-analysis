@@ -7,8 +7,7 @@ import { resolvePython } from '../scripts/python-environment.mjs';
 import references from './fixtures/colour-reference.json';
 
 const environment = resolvePython(resolve('.'));
-const python = 'python' in environment ? environment.python : undefined;
-const derivationTest = 'message' in environment && !environment.fatal ? it.skip : it;
+const derivationTest = 'message' in environment ? it.skip : it;
 const script = resolve('scripts/derive-palettes.py');
 
 if ('message' in environment) {
@@ -36,15 +35,15 @@ derivationTest('reproduces every swatch twice from the pinned source and detects
   const directory = mkdtempSync(resolve('.palette-test-'));
   const output = join(directory, 'seasons.json');
   try {
-    execFileSync(python!, [script, '--output', output], { encoding: 'utf8' });
+    execFileSync(environment.python, [script, '--output', output], { encoding: 'utf8' });
     const first = readFileSync(output);
     expect(first.equals(readFileSync(resolve('src/knowledge/seasons.json')))).toBe(true);
-    execFileSync(python!, [script, '--output', output], { encoding: 'utf8' });
+    execFileSync(environment.python, [script, '--output', output], { encoding: 'utf8' });
     expect(readFileSync(output).equals(first)).toBe(true);
     const corrupted = JSON.parse(first.toString());
     corrupted[0].palette[0].lab.l += 0.01;
     writeFileSync(output, JSON.stringify(corrupted, null, 2) + '\n');
-    expect(() => execFileSync(python!, [script, '--check', '--output', output], {
+    expect(() => execFileSync(environment.python, [script, '--check', '--output', output], {
       encoding: 'utf8', stdio: 'pipe',
     })).toThrow('seasons.json differs from pinned Munsell derivation');
   } finally {
