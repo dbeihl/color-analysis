@@ -36,6 +36,8 @@ describe('result uncertainty', () => {
     expect(html).toContain('This is not a reliable answer');
     for (const warning of result.warnings) expect(html).toContain(warning.message);
     expect(html).toContain('What would settle this');
+    expect(html).toContain('A contradiction produced this percentage: a palette the system treats as incompatible scored just as well, so this is an unreliable answer. It is not a chance of being right about you.');
+    expect(html).not.toMatch(/confidence/i);
   });
 });
 
@@ -43,9 +45,21 @@ describe('result honesty for a capped but unwarned answer', () => {
   it('offers the side-by-side next step when the self-reported cap is the only limit', () => {
     const result = resolveColoring(chosenInput('monk-8', 'blond', 'iris-chestnut', 0.45));
     expect(result.warnings).toEqual([]);
-    expect(result.colorSeason.confidence).toEqual({ basis: 'self-reported-input-confidence', value: 0.45 });
     const html = renderToStaticMarkup(<Result result={result} />);
     expect(html).toContain('What would settle this');
+    expect(html).toContain('Your own stated certainty about the swatch matches produced this percentage. It is not a measurement of the palettes or a chance of being right about you.');
+    expect(html).not.toMatch(/confidence/i);
+  });
+});
+
+describe('score separation reporting', () => {
+  it('explains score separation when the closest palette scores determine it', () => {
+    const result = resolveColoring(golden.find(({ id }) => id === 'monk-6-dark-red-green')!.input);
+    const html = renderToStaticMarkup(<Result result={result} />);
+
+    expect(html).toContain('Score separation');
+    expect(html).toContain('The gap between the two closest palette scores produced this percentage. It is not a chance of being right about you.');
+    expect(html).not.toMatch(/confidence/i);
   });
 });
 
@@ -89,24 +103,13 @@ describe('swatch to engine input wiring', () => {
   });
 });
 
-describe('the settle-this threshold', () => {
-  it('withholds the next step once an unwarned answer reaches the threshold', () => {
+describe('the settle-this next step', () => {
+  it('offers the next step at an unwarned result that previously reached the threshold', () => {
     const result = resolveColoring(chosenInput('monk-8', 'blond', 'iris-chestnut', 0.5));
     expect(result.warnings).toEqual([]);
-    expect(result.colorSeason.confidence.value).toBe(0.5);
-    expect(renderToStaticMarkup(<Result result={result} />)).not.toContain('What would settle this');
+    const html = renderToStaticMarkup(<Result result={result} />);
+    expect(html).toContain('50%');
+    expect(html).toContain('What would settle this');
   });
 
-  it('offers the next step just below the threshold', () => {
-    const result = resolveColoring(chosenInput('monk-8', 'blond', 'iris-chestnut', 0.49));
-    expect(result.warnings).toEqual([]);
-    expect(result.colorSeason.confidence.value).toBe(0.49);
-    expect(renderToStaticMarkup(<Result result={result} />)).toContain('What would settle this');
-  });
-
-  it('offers the next step for a confident answer that still carries a warning', () => {
-    const result = resolveColoring(fixtureWith('conflicting-signals').input);
-    expect(result.warnings.length).toBeGreaterThan(0);
-    expect(renderToStaticMarkup(<Result result={result} />)).toContain('What would settle this');
-  });
 });

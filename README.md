@@ -3,8 +3,8 @@
 A personal colour analysis tool.
 It compares candidate colours composited against a photo of your own face, side by side in the same shot, and tells you which one actually suits you better.
 
-What is live today is the manual-entry page: choose the closest published skin, hair and eye references, say how well they matched you, and read back a suggested season with its confidence and its palette.
-The blind colour-comparison test is the intended next step and is not built yet, so the page says so wherever a result is unsettled.
+What is live today is the manual-entry page: choose the closest published skin, hair and eye references, say how well they matched you, and read back a suggested season with its score separation and its palette.
+The blind colour-comparison test is the intended next step and is not built yet, so the page says so on every result.
 Face shape guidance is still to come as well, and it arrives off by default, labelled as a rule of thumb rather than a finding.
 No photo measurement, no wardrobe cataloguing, no Korean tone lens.
 See `DECISIONS.md` for the full scope record and reasoning.
