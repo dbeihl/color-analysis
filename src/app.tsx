@@ -4,8 +4,6 @@ import { inputSwatches, swatchHex, toColoringInput, type InputSwatch } from './i
 import { resolveColoring } from './resolver';
 import type { PaletteEntry, StyleProfile, Warning } from './domain/types';
 
-const SETTLED_CONFIDENCE = 0.5;
-
 const toRgb = converter('rgb');
 
 const confidenceChoices = [
@@ -32,11 +30,11 @@ function sourceWarning(warning: Warning) {
 function confidenceBasis(result: StyleProfile) {
   switch (result.colorSeason.confidence.basis) {
     case 'relative-score-margin':
-      return 'The gap between the two closest palette scores set this confidence.';
+      return 'The gap between the two closest palette scores produced this percentage. It is not a chance of being right about you.';
     case 'self-reported-input-confidence':
-      return 'Your confidence in the swatch matches capped this confidence.';
+      return 'Your own stated certainty about the swatch matches produced this percentage. It is not a measurement of the palettes or a chance of being right about you.';
     case 'contradicted-adjacency':
-      return 'A non-adjacent palette scored equally well, so the result is set to zero confidence.';
+      return 'A contradiction produced this percentage: a palette the system treats as incompatible scored just as well, so this is an unreliable answer. It is not a chance of being right about you.';
   }
 }
 
@@ -79,7 +77,6 @@ function SwatchChoice({
 export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingElement>; result: StyleProfile }) {
   const unreliable = result.warnings.some(({ code }) => code === 'low-confidence' || code === 'conflicting-signals');
   const confidence = Math.round(result.colorSeason.confidence.value * 100);
-  const unsettled = result.warnings.length > 0 || result.colorSeason.confidence.value < SETTLED_CONFIDENCE;
 
   return (
     <section aria-labelledby="result-heading" className="mt-12 border-t border-stone-300 pt-10">
@@ -115,7 +112,7 @@ export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingEle
           <p className="mt-3 leading-7 text-stone-600">This is the numeric lightness gap between the two references you chose, and it is not a reading of how you look.</p>
         </article>
         <article className="rounded-2xl border border-stone-300 bg-white p-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-stone-600">Confidence</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-stone-600">Score separation</p>
           <p className="mt-2 text-4xl font-semibold tracking-tight text-stone-950">{confidence}%</p>
           <p className="mt-4 leading-7 text-stone-700">{confidenceBasis(result)}</p>
         </article>
@@ -128,12 +125,10 @@ export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingEle
         </article>
       )}
 
-      {unsettled && (
-        <article className="mt-6 rounded-2xl border border-stone-300 bg-white p-6">
-          <h3 className="text-xl font-semibold text-stone-950">What would settle this</h3>
-          <p className="mt-2 max-w-3xl leading-7 text-stone-700">Compare two candidate colours side by side against your own face in one photograph, so both colours share the same light. That blind comparison is the intended next step, but it is not built yet. It will belong here when it is ready.</p>
-        </article>
-      )}
+      <article className="mt-6 rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 className="text-xl font-semibold text-stone-950">What would settle this</h3>
+        <p className="mt-2 max-w-3xl leading-7 text-stone-700">Compare two candidate colours side by side against your own face in one photograph, so both colours share the same light. That blind comparison is the intended next step, but it is not built yet. It will belong here when it is ready.</p>
+      </article>
 
       <section aria-labelledby="palette-heading" className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
