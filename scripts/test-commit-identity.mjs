@@ -10,6 +10,7 @@ const shell = block[1].replace(/^          /gm, '');
 const allowed = '51423378+dbeihl@users.noreply.github.com';
 const wrong = 'developer@work.example';
 const maintainer = 'dbeihl';
+const workIdentityName = 'David Beihl';
 mkdirSync('.work', { recursive: true });
 const cwd = mkdtempSync(resolve('.work/identity-proof-'));
 const env = { ...process.env, GIT_AUTHOR_NAME: 'Fixture', GIT_COMMITTER_NAME: 'Fixture',
@@ -49,7 +50,8 @@ try {
       const script = shell.replaceAll('${{ github.event_name }}', event)
         .replaceAll('${{ github.base_ref }}', 'main')
         .replaceAll('${{ github.event.pull_request.head.sha }}', sha)
-        .replaceAll('${{ github.event.pull_request.head.repo.fork }}', 'false');
+        .replaceAll('${{ github.event.pull_request.head.repo.fork }}', 'false')
+        .replaceAll('${{ github.event.pull_request.user.login }}', maintainer);
       const result = spawnSync('bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', script],
         { cwd, env: { ...env, BEFORE: base, AFTER: sha }, encoding: 'utf8' });
       console.log(`${label} (${event}): exit ${result.status}`);
@@ -61,17 +63,17 @@ try {
   }
 
   const forkCases = [
-    ['fork outside author', wrong, wrong, 'Fixture', 0],
-    ['fork maintainer identity with wrong author email', wrong, allowed, maintainer, 1, 'author', wrong],
-    ['same-repository outside author', wrong, allowed, 'Fixture', 1, 'author', wrong],
+    ['fork outside author', wrong, wrong, 'Fixture', true, 'outside-contributor', 0],
+    ['fork maintainer account with work identity', wrong, allowed, workIdentityName, true, maintainer, 1, 'author', wrong],
+    ['same-repository outside author', wrong, allowed, 'Fixture', false, maintainer, 1, 'author', wrong],
   ];
-  for (const [label, author, committer, authorName, expected, field, email] of forkCases) {
+  for (const [label, author, committer, authorName, fork, opener, expected, field, email] of forkCases) {
     const sha = commit([side], author, committer, authorName);
-    const fork = label.startsWith('fork ');
     const script = shell.replaceAll('${{ github.event_name }}', 'pull_request')
       .replaceAll('${{ github.base_ref }}', 'main')
       .replaceAll('${{ github.event.pull_request.head.sha }}', sha)
-      .replaceAll('${{ github.event.pull_request.head.repo.fork }}', String(fork));
+      .replaceAll('${{ github.event.pull_request.head.repo.fork }}', String(fork))
+      .replaceAll('${{ github.event.pull_request.user.login }}', opener);
     const result = spawnSync('bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', script],
       { cwd, env: { ...env, BEFORE: base, AFTER: sha }, encoding: 'utf8' });
     console.log(`${label} (pull_request): exit ${result.status}`);
