@@ -9,6 +9,7 @@ assert.ok(block, 'Workflow check shell block must exist');
 const shell = block[1].replace(/^          /gm, '');
 const allowed = '51423378+dbeihl@users.noreply.github.com';
 const wrong = 'developer@work.example';
+const maintainer = 'dbeihl';
 mkdirSync('.work', { recursive: true });
 const cwd = mkdtempSync(resolve('.work/identity-proof-'));
 const env = { ...process.env, GIT_AUTHOR_NAME: 'Fixture', GIT_COMMITTER_NAME: 'Fixture',
@@ -18,9 +19,14 @@ function git(args, extra = {}, input) {
   assert.equal(result.status, 0, result.stderr);
   return result.stdout.trim();
 }
-function commit(parents, author = allowed, committer = allowed) {
+function commit(parents, author = allowed, committer = allowed, authorName = 'Fixture', committerName = 'Fixture') {
   return git(['commit-tree', tree, ...parents.flatMap(parent => ['-p', parent]), '-m', 'Identity fixture'],
-    { GIT_AUTHOR_EMAIL: author, GIT_COMMITTER_EMAIL: committer });
+    {
+      GIT_AUTHOR_EMAIL: author,
+      GIT_AUTHOR_NAME: authorName,
+      GIT_COMMITTER_EMAIL: committer,
+      GIT_COMMITTER_NAME: committerName,
+    });
 }
 let tree;
 try {
@@ -42,7 +48,8 @@ try {
     for (const event of ['push', 'pull_request']) {
       const script = shell.replaceAll('${{ github.event_name }}', event)
         .replaceAll('${{ github.base_ref }}', 'main')
-        .replaceAll('${{ github.event.pull_request.head.sha }}', sha);
+        .replaceAll('${{ github.event.pull_request.head.sha }}', sha)
+        .replaceAll('${{ github.event.pull_request.head.repo.fork }}', 'false');
       const result = spawnSync('bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', script],
         { cwd, env: { ...env, BEFORE: base, AFTER: sha }, encoding: 'utf8' });
       console.log(`${label} (${event}): exit ${result.status}`);
@@ -51,6 +58,27 @@ try {
       assert.equal(result.stdout, expected === 0 ? '' :
         `Commit ${sha} has ${field} email '${email}', expected '${allowed}'\n`);
     }
+  }
+
+  const forkCases = [
+    ['fork outside author', wrong, wrong, 'Fixture', 0],
+    ['fork maintainer identity with wrong author email', wrong, allowed, maintainer, 1, 'author', wrong],
+    ['same-repository outside author', wrong, allowed, 'Fixture', 1, 'author', wrong],
+  ];
+  for (const [label, author, committer, authorName, expected, field, email] of forkCases) {
+    const sha = commit([side], author, committer, authorName);
+    const fork = label.startsWith('fork ');
+    const script = shell.replaceAll('${{ github.event_name }}', 'pull_request')
+      .replaceAll('${{ github.base_ref }}', 'main')
+      .replaceAll('${{ github.event.pull_request.head.sha }}', sha)
+      .replaceAll('${{ github.event.pull_request.head.repo.fork }}', String(fork));
+    const result = spawnSync('bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', script],
+      { cwd, env: { ...env, BEFORE: base, AFTER: sha }, encoding: 'utf8' });
+    console.log(`${label} (pull_request): exit ${result.status}`);
+    if (result.stdout) process.stdout.write(result.stdout);
+    assert.equal(result.status, expected, result.stderr);
+    assert.equal(result.stdout, expected === 0 ? '' :
+      `Commit ${sha} has ${field} email '${email}', expected '${allowed}'\n`);
   }
 } finally {
   rmSync(cwd, { recursive: true, force: true });

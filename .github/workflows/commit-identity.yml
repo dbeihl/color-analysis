@@ -32,8 +32,12 @@ jobs:
           fi
 
           for sha in $COMMITS; do
+            author_name=$(git log -1 --format='%an' "$sha")
             author_email=$(git log -1 --format='%ae' "$sha")
             committer_email=$(git log -1 --format='%ce' "$sha")
+            if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.head.repo.fork }}" = "true" ] && [ "$author_name" != "dbeihl" ]; then
+              continue
+            fi
             if [ "$author_email" != "$ALLOWED" ]; then
               echo "Commit $sha has author email '$author_email', expected '$ALLOWED'"
               FAILED=1
