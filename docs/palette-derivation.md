@@ -8,13 +8,10 @@ Face-shape guidance is not part of this phase; it arrives with the line-and-face
 
 ## Reproduce and validate
 
-Use Node 22.12 or newer and Python 3.11 through 3.13.
 Python is used only for offline generation and provenance tests; the application loads committed JSON and never runs Python.
+Complete the setup in the [README](../README.md#setup), then run:
 
 ```sh
-npm ci
-python3 -m venv .venv
-.venv/bin/pip install -r scripts/requirements.txt
 .venv/bin/ruff check scripts/
 .venv/bin/mypy
 npm run derive
