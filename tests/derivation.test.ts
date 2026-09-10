@@ -3,13 +3,17 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { expect, it } from 'vitest';
 import { colorSeasons } from '../src/knowledge/load';
-import { resolvePython } from '../scripts/python-environment.mjs';
+import { pythonSetupCommand, resolvePython } from '../scripts/python-environment.mjs';
 import references from './fixtures/colour-reference.json';
 
 const environment = resolvePython(resolve('.'));
 const python = 'python' in environment ? environment.python : undefined;
 const derivationTest = python ? it : it.skip;
 const script = resolve('scripts/derive-palettes.py');
+
+if ('message' in environment) {
+  console.log(`Skipping the palette derivation reproduction. ${environment.message}`);
+}
 
 it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
   for (const reference of references) {
@@ -25,7 +29,7 @@ it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
   }
 });
 
-derivationTest('reproduces every swatch twice from the pinned source and detects edited output (requires Python; run: python3.13 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt)', () => {
+derivationTest(`reproduces every swatch twice from the pinned source and detects edited output (requires Python; run: ${pythonSetupCommand})`, () => {
   const directory = mkdtempSync(resolve('.palette-test-'));
   const output = join(directory, 'seasons.json');
   try {
