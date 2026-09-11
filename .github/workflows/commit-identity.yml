@@ -1,50 +1,57 @@
 name: Commit identity guard
 
-# Only pull requests are checked, because that is where the protection lives. Branch
-# protection on main requires a pull request, admins included, so main is unreachable
-# without one. This depends on that branch protection staying in force.
 on:
   pull_request:
+  push:
+    branches: [main]
 
 jobs:
   check-identity:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Check author and committer email on every commit
+      - name: Reject author and committer emails at the maintainer's work domain
         env:
-          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
         run: |
           set -e
-          ALLOWED="51423378+dbeihl@users.noreply.github.com"
-          OWNER="${{ github.event.pull_request.head.repo.owner.login }}"
+          shopt -s nocasematch
+          WORK_DOMAIN="utilicast.com"
           FAILED=0
-          LOGINS=$(gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/commits" --jq '.[] | "\(.sha) \(.author.login // "-") \(.committer.login // "-")"')
 
-          for sha in $(git rev-list "origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}"); do
-            if [ "$OWNER" != "dbeihl" ] && grep -qxE "$sha $OWNER ($OWNER|web-flow)" <<< "$LOGINS"; then
-              continue
-            fi
+          at_work_domain() {
+            case "$1" in
+              *@"$WORK_DOMAIN"|*@*."$WORK_DOMAIN") return 0 ;;
+            esac
+            return 1
+          }
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            COMMITS=$(git rev-list "origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}")
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            echo "No usable 'before' commit (first push or force-push); checking only the pushed commit."
+            COMMITS=$(git rev-list -1 "$AFTER")
+          else
+            COMMITS=$(git rev-list "$BEFORE..$AFTER")
+          fi
+
+          for sha in $COMMITS; do
             author_email=$(git log -1 --format='%ae' "$sha")
             committer_email=$(git log -1 --format='%ce' "$sha")
-            if [ "$author_email" != "$ALLOWED" ]; then
-              echo "Commit $sha has author email '$author_email', expected '$ALLOWED'"
+            if at_work_domain "$author_email"; then
+              echo "Commit $sha has author email '$author_email' at the maintainer's work domain $WORK_DOMAIN"
               FAILED=1
             fi
-            parents=$(git log -1 --format='%P' "$sha")
-            if [ "$committer_email" != "$ALLOWED" ] && ! { [ "$committer_email" = "noreply@github.com" ] && [[ "$parents" = *" "* ]]; }; then
-              echo "Commit $sha has committer email '$committer_email', expected '$ALLOWED'"
+            if at_work_domain "$committer_email"; then
+              echo "Commit $sha has committer email '$committer_email' at the maintainer's work domain $WORK_DOMAIN"
               FAILED=1
             fi
           done
           if [ "$FAILED" -ne 0 ]; then
-            echo "Commits in a pull request from a fork pass when GitHub links their author and committer to the fork owner's account. See CONTRIBUTING.md."
             exit 1
           fi
 
