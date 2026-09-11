@@ -13,6 +13,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Deliberately a denylist of one hazard, the maintainer's work domain, not an identity allowlist:
+      # contributors and the maintainer may commit with any other address, and nothing checks GitHub
+      # account links. scripts/test-commit-identity.mjs pins the accepted and rejected cases.
       - name: Reject author and committer emails at the maintainer's work domain
         env:
           BEFORE: ${{ github.event.before }}
