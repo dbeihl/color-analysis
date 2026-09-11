@@ -13,14 +13,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check author and committer email on every commit
+      # Deliberately a denylist of one hazard, the maintainer's work domain, not an identity allowlist:
+      # contributors and the maintainer may commit with any other address, and nothing checks GitHub
+      # account links. scripts/test-commit-identity.mjs pins the accepted and rejected cases.
+      - name: Reject author and committer emails at the maintainer's work domain
         env:
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.event.after }}
         run: |
           set -e
-          ALLOWED="51423378+dbeihl@users.noreply.github.com"
+          shopt -s nocasematch
+          WORK_DOMAIN="utilicast.com"
           FAILED=0
+
+          at_work_domain() {
+            case "$1" in
+              *@"$WORK_DOMAIN"|*@*."$WORK_DOMAIN") return 0 ;;
+            esac
+            return 1
+          }
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             COMMITS=$(git rev-list "origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}")
@@ -34,13 +45,12 @@ jobs:
           for sha in $COMMITS; do
             author_email=$(git log -1 --format='%ae' "$sha")
             committer_email=$(git log -1 --format='%ce' "$sha")
-            if [ "$author_email" != "$ALLOWED" ]; then
-              echo "Commit $sha has author email '$author_email', expected '$ALLOWED'"
+            if at_work_domain "$author_email"; then
+              echo "Commit $sha has author email '$author_email' at the maintainer's work domain $WORK_DOMAIN"
               FAILED=1
             fi
-            parents=$(git log -1 --format='%P' "$sha")
-            if [ "$committer_email" != "$ALLOWED" ] && ! { [ "$committer_email" = "noreply@github.com" ] && [[ "$parents" = *" "* ]]; }; then
-              echo "Commit $sha has committer email '$committer_email', expected '$ALLOWED'"
+            if at_work_domain "$committer_email"; then
+              echo "Commit $sha has committer email '$committer_email' at the maintainer's work domain $WORK_DOMAIN"
               FAILED=1
             fi
           done
