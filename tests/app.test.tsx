@@ -47,6 +47,7 @@ describe('result honesty for a capped but unwarned answer', () => {
     expect(result.warnings).toEqual([]);
     const html = renderToStaticMarkup(<Result result={result} />);
     expect(html).toContain('What would settle this');
+    expect(html).toContain('The resolver found a clearer palette-recipe match, but it still does not determine your season.');
     expect(html).toContain('Your own stated certainty about the swatch matches produced this percentage. It is not a measurement of the palettes or a chance of being right about you.');
     expect(html).not.toMatch(/confidence/i);
   });

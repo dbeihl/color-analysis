@@ -88,7 +88,7 @@ export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingEle
         <p className={`mt-3 max-w-2xl text-lg leading-8 ${unreliable ? 'text-stone-100' : 'text-stone-700'}`}>
           {unreliable
             ? 'Use this palette recipe only as a starting point. The evidence below explains what this result cannot settle.'
-            : 'The resolver found a clearer palette-recipe match.'}
+            : 'The resolver found a clearer palette-recipe match, but it still does not determine your season.'}
         </p>
       </div>
 
