@@ -9,6 +9,8 @@ Face shape guidance is still to come as well, and it arrives off by default, lab
 No photo measurement, no wardrobe cataloguing, no Korean tone lens.
 See `DECISIONS.md` for the full scope record and reasoning.
 
+This suggests, it does not determine.
+The comparison test is being built precisely so your own eyes settle what a season label can't.
 The recipes are a widely taught convention, not twelve natural kinds of people. Score separation is not a probability or confidence band.
 
 Read `DECISIONS.md` before proposing scope changes.

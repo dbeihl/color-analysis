@@ -23,7 +23,7 @@ function sourceWarning(warning: Warning) {
     case 'conflicting-signals':
       return 'The palette signals conflict';
     case 'low-confidence':
-      return 'Use this as a starting point';
+      return 'This is only a suggestion';
   }
 }
 
@@ -108,6 +108,7 @@ export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingEle
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-stone-600">Nearest palette recipe</p>
           <h3 className="mt-2 text-4xl font-semibold tracking-tight text-stone-950">{titleCase(result.colorSeason.primary)}</h3>
           <p className="mt-4 leading-7 text-stone-700">The result is the nearest match among twelve designed palette recipes. The recipes are a widely taught convention, not twelve natural kinds of people.</p>
+          <p className="mt-3 leading-7 text-stone-700">Version one leans heavily toward a few seasons, so read this season as a suggestion rather than a finding.</p>
           <p className="mt-5 text-lg leading-8 text-stone-700">Skin-to-hair contrast: <strong className="font-semibold text-stone-950">{titleCase(result.contrastLevel)}</strong>.</p>
           <p className="mt-3 leading-7 text-stone-600">This is the numeric lightness gap between the two references you chose, and it is not a reading of how you look.</p>
         </article>

@@ -26,7 +26,7 @@ describe('result uncertainty', () => {
     const result = resolveColoring(fixtureWith('low-confidence').input);
     const html = renderToStaticMarkup(<Result result={result} />);
     expect(html).toContain('This is not a reliable answer');
-    expect(html).toContain('Use this as a starting point');
+    expect(html).toContain('This is only a suggestion');
     expect(html).toContain(result.warnings.find(({ code }) => code === 'low-confidence')!.message);
   });
 
@@ -71,6 +71,7 @@ describe('skin-to-hair contrast reporting', () => {
     expect(html).toContain('Skin-to-hair contrast');
     expect(html).toContain('This is the numeric lightness gap between the two references you chose, and it is not a reading of how you look.');
     expect(html).toContain('The result is the nearest match among twelve designed palette recipes. The recipes are a widely taught convention, not twelve natural kinds of people.');
+    expect(html).toContain('Version one leans heavily toward a few seasons, so read this season as a suggestion rather than a finding.');
     expect(html).not.toContain('being worked on');
     expect(html).not.toContain('measured under a different geometry');
   });
