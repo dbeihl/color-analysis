@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { Result } from '../src/app';
+import { App, Result } from '../src/app';
 import { inputSwatches, toColoringInput } from '../src/input-swatches';
 import { resolveColoring } from '../src/resolver';
 import golden from './fixtures/resolver-golden.json';
@@ -26,7 +26,7 @@ describe('result uncertainty', () => {
     const result = resolveColoring(fixtureWith('low-confidence').input);
     const html = renderToStaticMarkup(<Result result={result} />);
     expect(html).toContain('This is not a reliable answer');
-    expect(html).toContain('This is only a suggestion');
+    expect(html).toContain('Use this as a starting point');
     expect(html).toContain(result.warnings.find(({ code }) => code === 'low-confidence')!.message);
   });
 
@@ -70,7 +70,7 @@ describe('skin-to-hair contrast reporting', () => {
     const html = renderToStaticMarkup(<Result result={result} />);
     expect(html).toContain('Skin-to-hair contrast');
     expect(html).toContain('This is the numeric lightness gap between the two references you chose, and it is not a reading of how you look.');
-    expect(html).toContain('Version one leans heavily toward a few seasons, so read this season as a suggestion rather than a finding.');
+    expect(html).toContain('The result is the nearest match among twelve designed palette recipes. The recipes are a widely taught convention, not twelve natural kinds of people.');
     expect(html).not.toContain('being worked on');
     expect(html).not.toContain('measured under a different geometry');
   });
@@ -112,4 +112,12 @@ describe('the settle-this next step', () => {
     expect(html).toContain('What would settle this');
   });
 
+});
+
+describe('form framing', () => {
+  it('describes the result as a palette-recipe match rather than a season someone has', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).toContain('The resolver will find the nearest match among twelve designed palette recipes, show its score separation honestly, and put its palette in comparison order.');
+  });
 });

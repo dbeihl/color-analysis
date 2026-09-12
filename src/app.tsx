@@ -23,7 +23,7 @@ function sourceWarning(warning: Warning) {
     case 'conflicting-signals':
       return 'The palette signals conflict';
     case 'low-confidence':
-      return 'This is only a suggestion';
+      return 'Use this as a starting point';
   }
 }
 
@@ -87,8 +87,8 @@ export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingEle
         </h2>
         <p className={`mt-3 max-w-2xl text-lg leading-8 ${unreliable ? 'text-stone-100' : 'text-stone-700'}`}>
           {unreliable
-            ? 'Use the suggested season only as a starting point. The evidence below explains what this result cannot settle.'
-            : 'The resolver found a clearer starting point, but it still does not determine your season.'}
+            ? 'Use this palette recipe only as a starting point. The evidence below explains what this result cannot settle.'
+            : 'The resolver found a clearer palette-recipe match.'}
         </p>
       </div>
 
@@ -105,9 +105,9 @@ export function Result({ headingRef, result }: { headingRef?: Ref<HTMLHeadingEle
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <article className="rounded-2xl border border-stone-300 bg-white p-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-stone-600">Suggested season</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-stone-600">Nearest palette recipe</p>
           <h3 className="mt-2 text-4xl font-semibold tracking-tight text-stone-950">{titleCase(result.colorSeason.primary)}</h3>
-          <p className="mt-4 leading-7 text-stone-700">Version one leans heavily toward a few seasons, so read this season as a suggestion rather than a finding.</p>
+          <p className="mt-4 leading-7 text-stone-700">The result is the nearest match among twelve designed palette recipes. The recipes are a widely taught convention, not twelve natural kinds of people.</p>
           <p className="mt-5 text-lg leading-8 text-stone-700">Skin-to-hair contrast: <strong className="font-semibold text-stone-950">{titleCase(result.contrastLevel)}</strong>.</p>
           <p className="mt-3 leading-7 text-stone-600">This is the numeric lightness gap between the two references you chose, and it is not a reading of how you look.</p>
         </article>
@@ -189,7 +189,7 @@ export function App() {
       <header className="max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-600">Colour analysis</p>
         <h1 className="mt-4 text-4xl font-semibold tracking-tight text-stone-950 sm:text-6xl">A starting point, not a verdict.</h1>
-        <p className="mt-6 text-lg leading-8 text-stone-700">Choose the closest references you can recognise. The resolver will suggest a season, show its score separation honestly, and put its palette in comparison order.</p>
+        <p className="mt-6 text-lg leading-8 text-stone-700">Choose the closest references you can recognise. The resolver will find the nearest match among twelve designed palette recipes, show its score separation honestly, and put its palette in comparison order.</p>
       </header>
 
       <form className="mt-12" onSubmit={submit}>
@@ -239,7 +239,7 @@ export function App() {
           </div>
         </fieldset>
 
-        <button className="mt-12 min-h-12 rounded-xl bg-stone-950 px-6 py-3 font-semibold text-white transition hover:bg-stone-700 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-stone-950" type="submit">See the suggestion</button>
+        <button className="mt-12 min-h-12 rounded-xl bg-stone-950 px-6 py-3 font-semibold text-white transition hover:bg-stone-700 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-stone-950" type="submit">See your palette match</button>
       </form>
 
       {result && <Result headingRef={resultHeading} result={result} />}
