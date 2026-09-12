@@ -240,7 +240,7 @@ export function App() {
           </div>
         </fieldset>
 
-        <button className="mt-12 min-h-12 rounded-xl bg-stone-950 px-6 py-3 font-semibold text-white transition hover:bg-stone-700 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-stone-950" type="submit">See your palette match</button>
+        <button className="mt-12 min-h-12 rounded-xl bg-stone-950 px-6 py-3 font-semibold text-white transition hover:bg-stone-700 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-stone-950" type="submit">See the suggestion</button>
       </form>
 
       {result && <Result headingRef={resultHeading} result={result} />}
