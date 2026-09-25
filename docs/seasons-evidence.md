@@ -18,7 +18,7 @@ For this product, the defensible current statement is therefore:
 
 > The result is the nearest match among twelve designed palette recipes. The recipes are a widely taught convention, not twelve natural kinds of people, and their ability to predict which colours suit someone has not been validated.
 
-Better iris and hair references would improve input coverage. They cannot validate the number twelve or turn internally separated recipes into observed human groups. That distinction matters because the repository already showed that better-separated references reduced Deep Autumn concentration while increasing low-confidence results: coverage and discriminability are different properties.
+Better iris and hair references would improve input coverage. They cannot validate the number twelve or turn internally separated recipes into observed human groups. That distinction matters because the unpublished commissioning brief, not included in this repository and so not checkable here, reports that better-separated references reduced Deep Autumn concentration while increasing low-confidence results: coverage and discriminability are different properties.
 
 ## FINDINGS
 
@@ -120,10 +120,10 @@ None of these hypotheses is a proposed replacement taxonomy.
 The repository is admirably explicit about the boundary:
 
 - The palettes are samples from declared Munsell regions and do not validate twelve categories or personal suitability (`docs/palette-derivation.md:3-5`). Their axes are design intent, not measurements of people (`docs/palette-derivation.md:71-72`).
-- Each season has 48 generated swatches (`docs/palette-derivation.md:111-115`), but the regions deliberately overlap (`docs/palette-derivation.md:94`). The prior diagnosis supplied with this commission measured 576 memberships but only 431 unique coordinates; Soft Autumn/True Autumn share 18 of 48 and Soft Summer/Bright Winter share 16 of 48.
+- Each season has 48 generated swatches (`docs/palette-derivation.md:111-115`), but the regions deliberately overlap (`docs/palette-derivation.md:94`). The unpublished diagnosis supplied with this commission, not included in this repository and so not checkable here, measured 576 memberships but only 431 unique coordinates; Soft Autumn/True Autumn share 18 of 48 and Soft Summer/Bright Winter share 16 of 48.
 - Resolver thresholds are chosen rules of thumb, with no labelled-person dataset (`docs/resolver.md:5,9-18`). The current nearest-swatch scorer produces low confidence in 31 of 36 fixtures and closely bunched scores (`docs/resolver.md:22-27`). The golden cases record implementation outputs, not ground truth (`docs/resolver.md:88-90`).
-- The current picker has no representative iris data: all eye choices are brown and derive from clusters of one example iris, even though the source study contained 100 Korean eyes (`docs/input-swatches.md:76-84`). Its hair rows are individual participants rather than category means (`docs/input-swatches.md:28,41`).
-- In the 640-combination input sweep, Deep Autumn receives 472 combinations and 485 results are low-confidence (`docs/input-swatches.md:109-129`). The commissioned brief reports that substituting better-separated references reduced Deep Autumn to 275 but raised low-confidence results to 523. Better coverage did not create discriminability.
+- The current picker has no representative iris data: all eye choices are brown and derive from clusters of one example iris, even though the source study contained 100 Korean eyes (`docs/input-swatches.md:26-41`). Its hair rows are individual participants rather than category means (`docs/input-swatches.md:11-24`).
+- In the 640-combination input sweep, Deep Autumn receives 472 combinations and 485 results are low-confidence (`docs/input-swatches.md:109-129`). The unpublished commissioning brief, not included in this repository and so not checkable here, reports that substituting better-separated references reduced Deep Autumn to 275 but raised low-confidence results to 523. Better coverage did not create discriminability.
 - Project decisions already acknowledge that the best documented four-class automated accuracy is about .554, that no validation dataset is available, and that the current result must not be presented as a determination (`DECISIONS.md:14-23,99-101`; `docs/spec-corrections.md:47-53`).
 
 These are tests of reproducibility and internal behaviour. They cannot answer whether the labels are natural categories or predict suitability.
