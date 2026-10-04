@@ -95,10 +95,7 @@ These deliberately overlapping regions support comparison across boundaries rath
 
 ## Soft and light chroma ladders
 
-Soft palettes use Munsell chroma 2, 4 and 6 across their base neutrals, secondary neutrals, accents and statements; light palettes use 4, 6 and 8, with both neutral roles at 4.
-Metal remains a chroma-2 support-role exception in light palettes, and denim remains at 4 in both groups.
-The generated mean CIELCh D65 chroma is 29.46 for Soft Autumn versus 35.05 for Light Spring, and 22.93 for Soft Summer versus 26.65 for Light Summer.
-The test pins a separation greater than 3 within each warm or cool pair; that is an audit of the generated palettes, not a universal perceptual distance for Munsell chroma steps.
+Soft palettes use Munsell chroma 2, 4 and 6 across their base neutrals, secondary neutrals, accents and statements; light palettes use 4, 6 and 8, with both neutral roles at 4. Metal remains a chroma-2 support-role exception in light palettes, and denim remains at 4 in both groups. The soft/light regression in [tests/palettes.test.ts](../tests/palettes.test.ts) calculates mean CIELCh D65 chroma from the generated palettes and pins a separation greater than 3 for Light Spring versus Soft Autumn and Light Summer versus Soft Summer; that is an audit of the generated palettes, not a universal perceptual distance for Munsell chroma steps.
 
 ## Support-role limitations
 
@@ -145,7 +142,7 @@ It also rejects a `dominant` label that is not the axis with the largest absolut
 The browser entry imports the validated knowledge module before mounting its empty React root.
 Tests replace the JSON module with a deliberately malformed fixture to prove import itself rejects it.
 
-Cross-palette tests derive comparisons from the declared axes, with no list of selected pairwise examples.
+The general cross-palette axis checks derive comparisons from the declared axes; the additional soft/light regression uses the pairs described above.
 Every palette with a lower declared value must have lower mean Lab lightness than every palette with a higher value.
 Within each family, lower declared chroma must mean lower mean CIELCh D65 chroma.
 The family restriction accounts for the different Lab chroma scales reached by different Munsell hues and prevents treating Munsell chroma as a universal Lab distance.
