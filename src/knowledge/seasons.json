@@ -100,134 +100,6 @@
         }
       },
       {
-        "name": "2.5R 7/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 70.845099,
-          "a": 7.207512,
-          "b": 2.712808
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "2.5R",
-          "value": 7,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "7.5R 9/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 90.173274,
-          "a": 5.804424,
-          "b": 4.397057
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "7.5R",
-          "value": 9,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "5YR 9/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 90.187094,
-          "a": 4.668603,
-          "b": 9.974748
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "5YR",
-          "value": 9,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "2.5Y 8/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 80.556825,
-          "a": -0.080578,
-          "b": 14.878922
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "2.5Y",
-          "value": 8,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "10Y 7/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 70.900049,
-          "a": -4.510407,
-          "b": 15.191829
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "10Y",
-          "value": 7,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "7.5GY 7/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 70.906536,
-          "a": -9.612961,
-          "b": 11.205141
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "7.5GY",
-          "value": 7,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "2.5G 9/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 90.230442,
-          "a": -13.246038,
-          "b": 7.604196
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "2.5G",
-          "value": 9,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "10G 9/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 90.220267,
-          "a": -13.222695,
-          "b": 2.445602
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "10G",
-          "value": 9,
-          "chroma": 2
-        }
-      },
-      {
         "name": "2.5R 7/4",
         "lab": {
           "mode": "lab65",
@@ -235,11 +107,139 @@
           "a": 15.651627,
           "b": 5.74668
         },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "2.5R",
+          "value": 7,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "10R 8/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 80.514422,
+          "a": 14.545065,
+          "b": 14.149266
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10R",
+          "value": 8,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "10YR 7/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 70.889878,
+          "a": 5.140391,
+          "b": 25.607579
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10YR",
+          "value": 7,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "5Y 9/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 90.24427,
+          "a": -3.748904,
+          "b": 30.877179
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "5Y",
+          "value": 9,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "2.5GY 7/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 70.936652,
+          "a": -11.08309,
+          "b": 27.985102
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "2.5GY",
+          "value": 7,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "7.5GY 9/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 90.273949,
+          "a": -19.081022,
+          "b": 24.204088
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "7.5GY",
+          "value": 9,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "5G 7/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 70.933158,
+          "a": -22.498382,
+          "b": 8.173491
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "5G",
+          "value": 7,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "10G 9/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 90.252246,
+          "a": -24.629771,
+          "b": 4.177659
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10G",
+          "value": 9,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "2.5R 8/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 80.496866,
+          "a": 15.437463,
+          "b": 5.967719
+        },
         "role": "secondary-neutral",
         "nearFace": true,
         "munsell": {
           "hue": "2.5R",
-          "value": 7,
+          "value": 8,
           "chroma": 4
         }
       },
@@ -276,18 +276,18 @@
         }
       },
       {
-        "name": "10G 9/4",
+        "name": "10G 8/4",
         "lab": {
           "mode": "lab65",
-          "l": 90.252246,
-          "a": -24.629771,
-          "b": 4.177659
+          "l": 80.595039,
+          "a": -23.010605,
+          "b": 3.657166
         },
         "role": "secondary-neutral",
         "nearFace": true,
         "munsell": {
           "hue": "10G",
-          "value": 9,
+          "value": 8,
           "chroma": 4
         }
       },
@@ -2518,134 +2518,6 @@
         }
       },
       {
-        "name": "2.5G 7/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 70.903279,
-          "a": -11.758694,
-          "b": 6.432893
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "2.5G",
-          "value": 7,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "10G 7/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 70.894463,
-          "a": -11.821148,
-          "b": 1.853339
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "10G",
-          "value": 7,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "7.5BG 8/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 80.551651,
-          "a": -10.500425,
-          "b": -2.204215
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "7.5BG",
-          "value": 8,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "7.5B 7/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 70.860455,
-          "a": -5.008825,
-          "b": -5.814543
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "7.5B",
-          "value": 7,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "5PB 8/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 80.517131,
-          "a": -0.473496,
-          "b": -5.878788
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "5PB",
-          "value": 8,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "5P 7/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 70.836348,
-          "a": 4.486562,
-          "b": -5.071948
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "5P",
-          "value": 7,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "2.5RP 8/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 80.511376,
-          "a": 5.270209,
-          "b": -1.236827
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "2.5RP",
-          "value": 8,
-          "chroma": 2
-        }
-      },
-      {
-        "name": "10RP 9/2",
-        "lab": {
-          "mode": "lab65",
-          "l": 90.167895,
-          "a": 5.625177,
-          "b": 1.465506
-        },
-        "role": "base-neutral",
-        "nearFace": false,
-        "munsell": {
-          "hue": "10RP",
-          "value": 9,
-          "chroma": 2
-        }
-      },
-      {
         "name": "2.5G 7/4",
         "lab": {
           "mode": "lab65",
@@ -2653,11 +2525,139 @@
           "a": -21.926884,
           "b": 11.920021
         },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "2.5G",
+          "value": 7,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "10G 7/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 70.92313,
+          "a": -22.217809,
+          "b": 3.299172
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10G",
+          "value": 7,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "7.5BG 7/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 70.901054,
+          "a": -20.000636,
+          "b": -4.681054
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "7.5BG",
+          "value": 7,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "5B 8/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 80.539626,
+          "a": -13.923647,
+          "b": -11.461803
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "5B",
+          "value": 8,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "2.5PB 8/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 80.506274,
+          "a": -3.788649,
+          "b": -14.362665
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "2.5PB",
+          "value": 8,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "2.5P 9/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 90.12864,
+          "a": 8.083484,
+          "b": -13.212852
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "2.5P",
+          "value": 9,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "10P 9/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 90.128631,
+          "a": 13.912264,
+          "b": -5.977576
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10P",
+          "value": 9,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "10RP 8/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 80.49313,
+          "a": 15.289276,
+          "b": 3.829579
+        },
+        "role": "base-neutral",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10RP",
+          "value": 8,
+          "chroma": 4
+        }
+      },
+      {
+        "name": "2.5G 8/4",
+        "lab": {
+          "mode": "lab65",
+          "l": 80.61062,
+          "a": -22.498712,
+          "b": 12.621512
+        },
         "role": "secondary-neutral",
         "nearFace": true,
         "munsell": {
           "hue": "2.5G",
-          "value": 7,
+          "value": 8,
           "chroma": 4
         }
       },
@@ -2678,34 +2678,34 @@
         }
       },
       {
-        "name": "10PB 8/4",
+        "name": "10PB 7/4",
         "lab": {
           "mode": "lab65",
-          "l": 80.483171,
-          "a": 5.592215,
-          "b": -13.341675
+          "l": 70.811562,
+          "a": 6.028208,
+          "b": -13.82688
         },
         "role": "secondary-neutral",
         "nearFace": true,
         "munsell": {
           "hue": "10PB",
-          "value": 8,
+          "value": 7,
           "chroma": 4
         }
       },
       {
-        "name": "10RP 8/4",
+        "name": "10RP 7/4",
         "lab": {
           "mode": "lab65",
-          "l": 80.49313,
-          "a": 15.289276,
-          "b": 3.829579
+          "l": 70.822954,
+          "a": 15.51557,
+          "b": 3.623799
         },
         "role": "secondary-neutral",
         "nearFace": true,
         "munsell": {
           "hue": "10RP",
-          "value": 8,
+          "value": 7,
           "chroma": 4
         }
       },
@@ -4052,7 +4052,7 @@
       ],
       "chroma": [
         4,
-        8
+        6
       ]
     },
     "neighbors": [
@@ -4706,131 +4706,131 @@
         }
       },
       {
-        "name": "2.5G 5/8",
+        "name": "2.5G 5/6",
         "lab": {
           "mode": "lab65",
-          "l": 51.14181,
-          "a": -41.920674,
-          "b": 20.281887
+          "l": 51.111927,
+          "a": -31.009521,
+          "b": 15.472456
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "2.5G",
           "value": 5,
-          "chroma": 8
+          "chroma": 6
         }
       },
       {
-        "name": "10B 5/8",
+        "name": "10G 5/6",
         "lab": {
           "mode": "lab65",
-          "l": 50.957357,
-          "a": -11.585225,
-          "b": -30.457948
+          "l": 51.091463,
+          "a": -31.396294,
+          "b": 3.335036
+        },
+        "role": "statement",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10G",
+          "value": 5,
+          "chroma": 6
+        }
+      },
+      {
+        "name": "10BG 6/6",
+        "lab": {
+          "mode": "lab65",
+          "l": 61.083014,
+          "a": -26.470516,
+          "b": -12.233135
+        },
+        "role": "statement",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10BG",
+          "value": 6,
+          "chroma": 6
+        }
+      },
+      {
+        "name": "10B 6/6",
+        "lab": {
+          "mode": "lab65",
+          "l": 61.017036,
+          "a": -9.799757,
+          "b": -21.887669
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "10B",
-          "value": 5,
-          "chroma": 8
+          "value": 6,
+          "chroma": 6
         }
       },
       {
-        "name": "5PB 5/8",
+        "name": "7.5PB 4/6",
         "lab": {
           "mode": "lab65",
-          "l": 50.917752,
-          "a": 1.54186,
-          "b": -32.023053
+          "l": 40.646625,
+          "a": 8.314266,
+          "b": -24.778168
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
-          "hue": "5PB",
-          "value": 5,
-          "chroma": 8
+          "hue": "7.5PB",
+          "value": 4,
+          "chroma": 6
         }
       },
       {
-        "name": "10PB 5/8",
+        "name": "5P 5/6",
         "lab": {
           "mode": "lab65",
-          "l": 50.880934,
-          "a": 16.579181,
-          "b": -30.060206
-        },
-        "role": "statement",
-        "nearFace": false,
-        "munsell": {
-          "hue": "10PB",
-          "value": 5,
-          "chroma": 8
-        }
-      },
-      {
-        "name": "5P 5/8",
-        "lab": {
-          "mode": "lab65",
-          "l": 50.872072,
-          "a": 25.054009,
-          "b": -24.510376
+          "l": 50.910382,
+          "a": 18.394106,
+          "b": -18.505153
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "5P",
           "value": 5,
-          "chroma": 8
+          "chroma": 6
         }
       },
       {
-        "name": "10P 5/8",
+        "name": "2.5RP 5/6",
         "lab": {
           "mode": "lab65",
-          "l": 50.875624,
-          "a": 31.632949,
-          "b": -15.716045
+          "l": 50.917725,
+          "a": 24.919533,
+          "b": -7.661373
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
-          "hue": "10P",
+          "hue": "2.5RP",
           "value": 5,
-          "chroma": 8
+          "chroma": 6
         }
       },
       {
-        "name": "5RP 5/8",
+        "name": "10RP 5/6",
         "lab": {
           "mode": "lab65",
-          "l": 50.892399,
-          "a": 35.385279,
-          "b": -3.580679
-        },
-        "role": "statement",
-        "nearFace": false,
-        "munsell": {
-          "hue": "5RP",
-          "value": 5,
-          "chroma": 8
-        }
-      },
-      {
-        "name": "10RP 6/8",
-        "lab": {
-          "mode": "lab65",
-          "l": 60.958581,
-          "a": 33.332179,
-          "b": 7.172244
+          "l": 50.939311,
+          "a": 26.731897,
+          "b": 5.33009
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "10RP",
-          "value": 6,
-          "chroma": 8
+          "value": 5,
+          "chroma": 6
         }
       }
     ]
@@ -4858,7 +4858,7 @@
       ],
       "chroma": [
         4,
-        8
+        6
       ]
     },
     "neighbors": [
@@ -5512,131 +5512,131 @@
         }
       },
       {
-        "name": "2.5R 4/8",
+        "name": "2.5R 5/6",
         "lab": {
           "mode": "lab65",
-          "l": 40.639034,
-          "a": 37.035786,
-          "b": 10.959985
+          "l": 50.945976,
+          "a": 26.625382,
+          "b": 8.798691
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "2.5R",
-          "value": 4,
-          "chroma": 8
+          "value": 5,
+          "chroma": 6
         }
       },
       {
-        "name": "7.5R 4/8",
+        "name": "7.5R 6/6",
         "lab": {
           "mode": "lab65",
-          "l": 40.662501,
-          "a": 35.114416,
-          "b": 22.670977
+          "l": 61.004268,
+          "a": 23.966674,
+          "b": 16.305109
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "7.5R",
-          "value": 4,
-          "chroma": 8
+          "value": 6,
+          "chroma": 6
         }
       },
       {
-        "name": "2.5YR 4/8",
+        "name": "5YR 5/6",
         "lab": {
           "mode": "lab65",
-          "l": 40.698858,
-          "a": 28.384501,
-          "b": 35.400947
+          "l": 51.005139,
+          "a": 17.7956,
+          "b": 30.769786
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
-          "hue": "2.5YR",
-          "value": 4,
-          "chroma": 8
+          "hue": "5YR",
+          "value": 5,
+          "chroma": 6
         }
       },
       {
-        "name": "7.5YR 4/8",
+        "name": "2.5Y 4/6",
         "lab": {
           "mode": "lab65",
-          "l": 40.73952,
-          "a": 18.09189,
-          "b": 45.355662
-        },
-        "role": "statement",
-        "nearFace": false,
-        "munsell": {
-          "hue": "7.5YR",
-          "value": 4,
-          "chroma": 8
-        }
-      },
-      {
-        "name": "2.5Y 6/8",
-        "lab": {
-          "mode": "lab65",
-          "l": 61.101785,
-          "a": 5.646968,
-          "b": 54.553177
+          "l": 40.774439,
+          "a": 5.204247,
+          "b": 39.952575
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "2.5Y",
-          "value": 6,
-          "chroma": 8
-        }
-      },
-      {
-        "name": "2.5GY 6/8",
-        "lab": {
-          "mode": "lab65",
-          "l": 61.166741,
-          "a": -18.752705,
-          "b": 56.019958
-        },
-        "role": "statement",
-        "nearFace": false,
-        "munsell": {
-          "hue": "2.5GY",
-          "value": 6,
-          "chroma": 8
-        }
-      },
-      {
-        "name": "10GY 4/8",
-        "lab": {
-          "mode": "lab65",
-          "l": 40.870982,
-          "a": -38.516013,
-          "b": 31.2674
-        },
-        "role": "statement",
-        "nearFace": false,
-        "munsell": {
-          "hue": "10GY",
           "value": 4,
-          "chroma": 8
+          "chroma": 6
         }
       },
       {
-        "name": "10G 6/8",
+        "name": "10Y 4/6",
         "lab": {
           "mode": "lab65",
-          "l": 61.156027,
-          "a": -42.707396,
-          "b": 4.859947
+          "l": 40.813679,
+          "a": -8.738914,
+          "b": 42.534106
+        },
+        "role": "statement",
+        "nearFace": false,
+        "munsell": {
+          "hue": "10Y",
+          "value": 4,
+          "chroma": 6
+        }
+      },
+      {
+        "name": "5GY 6/6",
+        "lab": {
+          "mode": "lab65",
+          "l": 61.152313,
+          "a": -19.516866,
+          "b": 37.47161
+        },
+        "role": "statement",
+        "nearFace": false,
+        "munsell": {
+          "hue": "5GY",
+          "value": 6,
+          "chroma": 6
+        }
+      },
+      {
+        "name": "2.5G 5/6",
+        "lab": {
+          "mode": "lab65",
+          "l": 51.111927,
+          "a": -31.009521,
+          "b": 15.472456
+        },
+        "role": "statement",
+        "nearFace": false,
+        "munsell": {
+          "hue": "2.5G",
+          "value": 5,
+          "chroma": 6
+        }
+      },
+      {
+        "name": "10G 5/6",
+        "lab": {
+          "mode": "lab65",
+          "l": 51.091463,
+          "a": -31.396294,
+          "b": 3.335036
         },
         "role": "statement",
         "nearFace": false,
         "munsell": {
           "hue": "10G",
-          "value": 6,
-          "chroma": 8
+          "value": 5,
+          "chroma": 6
         }
       }
     ]

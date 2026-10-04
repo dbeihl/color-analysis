@@ -78,33 +78,34 @@ Value increases toward lightness, chroma increases toward saturation, and hue in
 | Bright Spring | chroma | 0.5, 0, 0.8 | R, YR, Y, GY, G | 4–6 | 10–16 |
 | Light Summer | value | -0.5, 0.7, -0.2 | G, BG, B, PB, P, RP | 7–9 | 6–8 |
 | True Summer | hue | -1, 0.3, 0.3 | G, B, PB, P | 5–7 | 6–10 |
-| Soft Summer | chroma | -0.5, 0, -0.7 | G, BG, B, PB, P, RP | 4–6 | 4–8 |
-| Soft Autumn | chroma | 0.5, 0, -0.7 | R, YR, Y, GY, G | 4–6 | 4–8 |
+| Soft Summer | chroma | -0.5, 0, -0.7 | G, BG, B, PB, P, RP | 4–6 | 4–6 |
+| Soft Autumn | chroma | 0.5, 0, -0.7 | R, YR, Y, GY, G | 4–6 | 4–6 |
 | True Autumn | hue | 1, 0, 0.3 | YR, Y, GY, G | 4–6 | 6–10 |
 | Deep Autumn | value | 0.5, -0.7, 0.3 | R, YR, Y, GY, G | 2–4 | 6–10 |
 | Deep Winter | value | -0.5, -0.7, 0.3 | G, BG, B, PB, P, RP | 2–4 | 6–10 |
 | True Winter | hue | -1, -0.3, 0.3 | G, B, PB, P | 3–5 | 6–10 |
 | Bright Winter | chroma | -0.5, 0, 0.8 | G, BG, B, PB, P, RP | 4–6 | 10–16 |
 
-Light regions use high values, deep regions low values, soft regions low chroma and bright regions high chroma, subject to the open limitation recorded below for the soft and light pair.
+Light regions use high values, deep regions low values, soft regions low chroma and bright regions high chroma.
 The midrange True Spring and True Summer regions sit above True Autumn and True Winter in value so their palettes remain distinct.
 The core regions are joined by the support regions below; every support swatch retains the same value interval as its colour season.
 Each colour season serialises this core as `coreRegion`, which describes the core hue families and core chroma rather than the full extent of the palette beside it.
 The metal and denim support roles are drawn from outside it deliberately, and the base neutrals and secondary neutrals sit at or below its chroma floor, so `coreRegion` must not be read as the set of every swatch a colour season carries.
 These deliberately overlapping regions support comparison across boundaries rather than claiming twelve disjoint natural classes.
 
-## Open limitation: soft and light share a chroma ladder
+## Soft and light chroma ladders
 
-The soft and light colour seasons are currently generated from an identical chroma ladder of 2, 4, 6 and 8, across base neutrals, secondary neutrals, accents and statements.
-Their measured mean CIELAB chroma differs by well under one unit, so the declared chroma axis of -0.7 against -0.2 is not independently supported by the generated data for that pair.
-In practice the soft and light palettes are separated by their value interval alone, and the cross-season chroma assertion passes on the incidental margin that value difference produces.
-Munsell chroma in this dataset moves in even integers, so there is no step available between 4 and 6 that would separate the two ladders as they currently stand.
-Whether the twelve colour seasons should be separated by chroma at all, or by value alone for this pair, is an open decision rather than a settled design, and it is recorded here so the next phase does not read the chroma axis as a property the data pins.
+Soft palettes use Munsell chroma 2, 4 and 6 across their base neutrals, secondary neutrals, accents and statements; light palettes use 4, 6 and 8, with both neutral roles at 4.
+Metal remains a chroma-2 support-role exception in light palettes, and denim remains at 4 in both groups.
+The generated mean CIELCh D65 chroma is 29.46 for Soft Autumn versus 35.05 for Light Spring, and 22.93 for Soft Summer versus 26.65 for Light Summer.
+The test pins a separation greater than 3 within each warm or cool pair; that is an audit of the generated palettes, not a universal perceptual distance for Munsell chroma steps.
 
-The metal role has the same shape of limitation.
-It currently draws from a strict subset of the base-neutral pool, at the same chroma and within the same value interval, so the metal label records a naming convention rather than a colorimetric distinction that the data supports.
+## Support-role limitations
+
+Metal draws from a strict subset of the base-neutral pool in non-light seasons, at the same chroma and within the same value interval, so its label there records a naming convention rather than a colorimetric distinction that the data supports.
+In light seasons the base neutrals move to chroma 4 while metal stays at 2, giving metal a separate chroma band but still no metallic appearance in a Lab triple.
 Denim carries the same limitation in the six cool colour seasons, where it draws from a strict subset of the secondary-neutral pool at the same chroma and within the same value interval, so the claim that denim is an explicit blue support region holds for the warm colour seasons only.
-Whether metal and denim should get their own separable bands is part of this same open decision, and it is left unanswered here for the same reason.
+Whether metal and denim should get their own separable bands remains open.
 
 ## Sampling and roles
 
@@ -118,16 +119,16 @@ Already selected rows are excluded from later roles, and generation throws if a 
 |---|---|---|---|
 | 1 | metal | 2 | YR/Y for positive hue; B/PB for negative hue; chroma 2 |
 | 2 | denim | 2 | B/PB; chroma 4 |
-| 3 | base-neutral | 8 | Core hue families; chroma 2 |
+| 3 | base-neutral | 8 | Core hue families; chroma 2 except light at 4 |
 | 4 | secondary-neutral | 4 | Core hue families; chroma 4 |
 | 5 | accent | 24 | Core hue families; chroma 6 for soft and light, 6–8 for true/deep, 10–12 for bright |
-| 6 | statement | 8 | Core hue families; chroma 8 for soft and light, 10 for true/deep, 14–16 for bright |
+| 6 | statement | 8 | Core hue families; chroma 6 for soft, 8 for light, 10 for true/deep, 14–16 for bright |
 
 A metal entry is a flat colour approximation; a Lab triple cannot model gloss, reflectance geometry or a metallic finish.
 Denim is an explicit blue support region even for warm palettes.
 A neutral here means a low-Munsell-chroma support colour, which can still have a visible tint.
 Every colour season draws its secondary neutrals from a strictly lower chroma than its accents, so the two labels stay separable rather than naming whichever rows the picker consumed first.
-The soft regions have the least room for that separation, so their statements reach chroma 8 while their accents stay at 6 and their secondary neutrals at 4.
+The soft regions have the least room for that separation, so their accents and statements both use chroma 6 while their secondary neutrals stay at 4.
 Accents and secondary neutrals have `nearFace: true` as a starting styling suggestion; other roles default to false.
 Import-time validation rejects a knowledge file whose `nearFace` disagrees with that rule, so the flag cannot be edited away from its role.
 No flag claims a measured effect on a face.

@@ -24,7 +24,6 @@ function assertAxes(entries: ColorSeason[]) {
       if (entry.axes.value < other.axes.value) {
         expect(measured.get(entry.id)!.value, `${entry.id} should be darker than ${other.id}`).toBeLessThan(measured.get(other.id)!.value);
       }
-      // Soft and light share one chroma ladder: this passes on an incidental margin from their value difference, and does not pin the chroma axis independently.
       if (entry.family === other.family && entry.axes.chroma < other.axes.chroma) {
         expect(measured.get(entry.id)!.chroma, `${entry.id} should be less chromatic than ${other.id}`).toBeLessThan(measured.get(other.id)!.chroma);
       }
@@ -144,6 +143,15 @@ describe('knowledge load contract', () => {
 
 it('reflects declared value, chroma and warmth axes across palettes', () => {
   assertAxes(colorSeasons);
+});
+
+it.each([
+  ['warm', 'soft-autumn', 'light-spring'],
+  ['cool', 'soft-summer', 'light-summer'],
+] as const)('separates %s soft and light mean CIELCh D65 chroma', (_family, softId, lightId) => {
+  const soft = colorSeasons.find((entry) => entry.id === softId)!;
+  const light = colorSeasons.find((entry) => entry.id === lightId)!;
+  expect(stats(light).chroma - stats(soft).chroma).toBeGreaterThan(3);
 });
 
 it('detects substituted lightness, chroma and hue data', () => {

@@ -9,7 +9,7 @@ Nothing here estimates accuracy. No threshold below was fitted against labelled 
 Each number in this section was chosen. Each is a rule of thumb rather than a measurement, and none is derived from evidence.
 
 `BOUNDARY_TOLERANCE = 0.005` is how far behind the winner a second season may score and still be offered for comparison, in mean OKLab distance.
-The top-two margins recorded across the 36 committed fixtures in `tests/fixtures/resolver-golden.json` run from 0.0002 to 0.021, so this value sits inside the operating range and materially decides who is told they sit on a boundary.
+The top-two margins recorded across the 36 committed fixtures in `tests/fixtures/resolver-golden.json` run from 0.000024 to 0.021, so this value sits inside the operating range and materially decides who is told they sit on a boundary.
 
 `LOW_CONFIDENCE = 0.25` is where a reported confidence starts carrying the warning that the result is a suggestion.
 
@@ -34,7 +34,7 @@ One row survives as evidence, because its scorer is the one in the tree and its 
 
 | variant | conflicting-signals | low-confidence | boundary | family split S/Su/A/W |
 | --- | --- | --- | --- | --- |
-| no agreement terms, nearest swatch only (shipped) | 12/36 | 31/36 | 17/36 | 9/9/9/9 |
+| no agreement terms, nearest swatch only (shipped) | 12/36 | 31/36 | 19/36 | 9/8/9/10 |
 
 The other rows have been removed rather than repeated.
 Those alternative scorers were never committed and the grid had no committed generator, so every number measured against them is a one-time development measurement that was not preserved.

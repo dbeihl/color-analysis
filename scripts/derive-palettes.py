@@ -137,7 +137,7 @@ def derive(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
             0.7: [7, 9],
         }[value]
         core, accents, statements = {
-            -0.7: ([4, 8], [6, 6], [8, 8]),
+            -0.7: ([4, 6], [6, 6], [6, 6]),
             -0.2: ([6, 8], [6, 6], [8, 8]),
             0.3: ([6, 10], [6, 8], [10, 10]),
             0.8: ([10, 16], [10, 12], [14, 16]),
@@ -153,10 +153,11 @@ def derive(samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
             if sample["inGamut"]
             and values[0] <= sample["munsell"]["value"] <= values[1]
         ]
+        base_chroma = 4 if chroma == -0.2 else 2
         roles = [
             ("metal", 2, ["YR", "Y"] if hue > 0 else ["B", "PB"], 2, 2),
             ("denim", 2, ["B", "PB"], 4, 4),
-            ("base-neutral", 8, hues, 2, 2),
+            ("base-neutral", 8, hues, base_chroma, base_chroma),
             ("secondary-neutral", 4, hues, 4, 4),
             ("accent", 24, hues, accents[0], accents[1]),
             ("statement", 8, hues, statements[0], statements[1]),
