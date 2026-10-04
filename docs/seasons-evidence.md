@@ -67,7 +67,7 @@ The literature located does not establish a natural soft/light split by chroma, 
 
 Practitioner-derived quantitative systems define both axes in advance. Kim et al.'s model, for example, makes “light” a high-value division and “mute” a low-saturation division, but its eight octants are imposed rather than recovered.[^10] The strongest independent suitability study found a skin-lightness-related hue effect; garment value did not differ between fair and tanned conditions, and a small saturation effect appeared in one experiment but did not replicate in the second.[^4] Sirisayan found skin lightness mattered to harmony judgements and broadly lower-chroma garment samples were preferred, but did not establish person clusters named Light and Soft.[^5]
 
-The repository's own state is therefore not externally vindicated. Its Light and Soft palettes share the identical Munsell chroma ladder, their mean CIELAB chroma differs by less than one, and they are separated in practice by value alone (`docs/palette-derivation.md:96-102`). The underlying axes are explicitly “qualitative design intent” rather than fitted measurements (`docs/palette-derivation.md:71-72`), and the regions are deliberately overlapping rather than claimed natural classes (`docs/palette-derivation.md:94`).
+The repository's own state is therefore not externally vindicated. Its Light and Soft palettes use distinct Munsell chroma ladders and generated mean CIELCh D65 chroma values, but those are designed implementation properties rather than evidence of a human boundary; `docs/palette-derivation.md` records the exact ladders and audit. The underlying axes are explicitly qualitative design intent rather than fitted measurements, and the regions are deliberately overlapping rather than claimed natural classes.
 
 **Finding:** Individual pigmentation traits can show continuous variation and limited trait-specific modes or clusters. The inspected evidence does not establish any replicated number of discrete whole-person colouring groups, and it supplies no empirical soft-versus-light boundary.
 
@@ -97,7 +97,7 @@ These are inferences from the findings, not things the sources establish:
 
 1. **A continuous, feature-specific account may fit the measurements better than discrete seasons.** This is suggested by continuous pigmentation distributions and by hue effects associated with measured skin lightness or yellowness. It has not been compared against seasonal systems in a preregistered predictive study.
 
-2. **The product's Light/Soft distinction may currently be a value distinction wearing two labels.** That is true of the generated palettes. It may or may not be true of people's responses; the necessary controlled study was not found.
+2. **The product's Light/Soft distinction may not correspond to a human boundary.** The generated palettes deliberately separate value and chroma, but the necessary controlled study of people's responses was not found.
 
 3. **Some apparent success of seasonal consultation may come from the draping comparison itself rather than the season label.** Repeated side-by-side judgement could be useful even if no stable latent category exists. No inspected study isolated this mechanism.
 
