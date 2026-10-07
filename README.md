@@ -31,6 +31,8 @@ python3 -m venv .venv
 npm test
 ```
 
+The repository's `.npmrc` makes incompatible dependency engine requirements fail installation with `EBADENGINE`. CI installs dependencies on the minimum supported Node.js version, so a dependency that excludes that version blocks the build.
+
 The palette derivation test runs when the Python environment is present. To regenerate or check the committed palette data, use `npm run derive` or `npm run derive:check` after the same setup.
 
 Stood up 2026-09-07. Personal repository under the dbeihl account, not the Utilicast work account.
