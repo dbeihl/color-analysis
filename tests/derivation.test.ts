@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { expect, it } from 'vitest';
 import { colorSeasons } from '../src/knowledge/load';
-import { resolvePython } from '../scripts/python-environment.mjs';
+import { macosScipyLoadGap, resolvePython } from '../scripts/python-environment.mjs';
 import references from './fixtures/colour-reference.json';
 
 const environment = resolvePython(resolve('.'));
@@ -28,7 +28,7 @@ it('matches independent Colour C-to-D65 CIELAB reference fixtures', () => {
   }
 });
 
-derivationTest('reproduces every swatch twice from the pinned source and detects edited output (requires Python)', () => {
+derivationTest('reproduces every swatch twice from the pinned source and detects edited output (requires Python)', ({ skip }) => {
   if ('message' in environment) {
     throw new Error(environment.message);
   }
@@ -46,6 +46,12 @@ derivationTest('reproduces every swatch twice from the pinned source and detects
     expect(() => execFileSync(environment.python, [script, '--check', '--output', output], {
       encoding: 'utf8', stdio: 'pipe',
     })).toThrow('seasons.json differs from pinned Munsell derivation');
+  } catch (error) {
+    const gap = macosScipyLoadGap(error);
+    if (gap) {
+      skip(gap);
+    }
+    throw error;
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
