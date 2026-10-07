@@ -20,7 +20,7 @@ npm test
 npm run build
 ```
 
-`npm test` generates the entire file twice, compares the bytes with the committed file and proves that an edited colour fails the reproduction check.
+When the palette derivation test runs, `npm test` generates the entire file twice, compares the bytes with the committed file and proves that an edited colour fails the reproduction check; see the [README setup conditions](../README.md#setup) for when it skips.
 It also validates knowledge loading, checks palette statistics and prints the nonblocking neutral-pairing report.
 `npm run derive:check` exits nonzero if any output differs, including provenance, roles, ordering or colour coordinates.
 Generation is offline after dependency installation, has no random seed or timestamp, and writes UTF-8 JSON with LF line endings and six decimal places for CIELAB channels.
