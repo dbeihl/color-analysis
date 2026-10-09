@@ -92,5 +92,5 @@ Each recorded `margin` is the exact tolerance at which that case starts contendi
 
 ## Inputs recorded but not yet used
 
-`skin.monkBand`, `hair.naturalLevel` and `hair.greyPercent` are validated and carried as deliberate seams for the later depth-banded makeup and hair-formula phases; version one records them without letting them move the answer.
+`skin.monkBand` and `hair.naturalLevel` are validated and carried as deliberate seams for later depth-banded makeup and hair-formula phases; version one records them without letting them move the answer.
 `ColoringFeatures` carries two measurements in the same position: `undertone.hueAngleDegrees` and `meanChroma` are computed on every call and nothing in the result reads them, since the palette-agreement terms that once did were evaluated and removed.

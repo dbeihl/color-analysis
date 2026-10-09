@@ -77,7 +77,6 @@ export function toColoringInput(
   skin: InputSwatch,
   hair: InputSwatch,
   eye: InputSwatch,
-  greyPercent: number,
   confidence: number,
 ): ColoringInput {
   if (!skin.monkBand || !hair.naturalLevel) throw new Error('Input metadata is incomplete');
@@ -86,7 +85,6 @@ export function toColoringInput(
     hair: {
       lab: swatchLab(hair),
       naturalLevel: hair.naturalLevel as ColoringInput['hair']['naturalLevel'],
-      greyPercent,
     },
     eye: { lab: swatchLab(eye) },
     source: 'manual',

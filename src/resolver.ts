@@ -19,7 +19,6 @@ const coloringInputSchema = z.strictObject({
   hair: z.strictObject({
     lab: labSchema,
     naturalLevel: tenBandSchema,
-    greyPercent: z.number().finite().min(0).max(100),
   }),
   eye: z.strictObject({ lab: labSchema }),
   source: z.literal('manual'),

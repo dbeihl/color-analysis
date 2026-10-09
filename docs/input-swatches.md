@@ -46,7 +46,7 @@ For skin and eye references, the value stored in `src/input-swatches.ts` is the 
 
 ## Inputs the resolver currently records only
 
-Natural hair level and grey percentage are passed through exactly as selected. `naturalLevel` orders the eight hair references by their own measured lightness and is not a colorist level scale, so it should not be read as one; `tests/input-swatches.test.ts` pins that ordering. Neither changes the version-one result yet; the resolver records them as seams for later work. The page says this plainly. The confidence question is different: it asks how well the published swatches match the person, and a low answer caps the resolver's reported confidence.
+`naturalLevel` orders the eight hair references by their own measured lightness and is not a colorist level scale, so it should not be read as one; `tests/input-swatches.test.ts` pins that ordering. It does not change the version-one result. The confidence question asks how well the published swatches match the person, and a low answer caps the resolver's reported confidence.
 
 ## When the page offers the side-by-side next step
 
@@ -108,9 +108,9 @@ A concrete next research step is to obtain the labelled colour-only records, cap
 
 ### Sweep: before and after
 
-Reproduction: `npm test -- tests/input-sweep.test.ts`. This runs the actual `toColoringInput` → `resolveColoring` path for all 10 skin × 8 hair × 8 eye choices at the most generous interface confidence of 0.8 and grey percentage 0. It is the same 640-colour-combination sweep as the original finding. The grey slider is recorded only; the other confidence answers cap confidence without changing the primary season. The sweep is a diagnostic distribution over equally weighted picker combinations, not a population-frequency estimate or an accuracy study.
+Reproduction: `npm test -- tests/input-sweep.test.ts`. This runs the actual `toColoringInput` → `resolveColoring` path for all 10 skin × 8 hair × 8 eye choices at the most generous interface confidence of 0.8. It is the same 640-colour-combination sweep as the original finding. The sweep is a diagnostic distribution over equally weighted picker combinations, not a population-frequency estimate or an accuracy study.
 
-| Season | Before: main 327b77b | After: no accepted replacement |
+| Season | Before: main 327b77b | After: grey question removed |
 |---|---:|---:|
 | Light Spring | 0 | 0 |
 | True Spring | 4 | 4 |
@@ -126,7 +126,7 @@ Reproduction: `npm test -- tests/input-sweep.test.ts`. This runs the actual `toC
 | Bright Winter | 0 | 0 |
 | Total | 640 | 640 |
 
-Deep Autumn is 73.75%; low-confidence is 485/640 (75.78125%); conflicting-signals is 147/640 (22.96875%). All are unchanged. Five seasons remain unreachable. The characterisation test asserts the entire current distribution, total and warning counts against the actual picker, without mocks, bypass flags, skips or expected-failure annotations. Its comment identifies these numbers as a known defect. A distribution change fails the test and requires inspection of the full sweep before updating the baseline. The goals of all twelve seasons being reachable, a useful spread and warnings caused by personal ambiguity remain unmet; a passing characterisation test does not establish accurate seasons or calibrated confidence.
+The 640 resolver outputs match the pre-removal replay. Deep Autumn is 73.75%; low-confidence is 485/640 (75.78125%); conflicting-signals is 147/640 (22.96875%). All are unchanged. Five seasons remain unreachable. The characterisation test asserts the entire current distribution, total and warning counts against the actual picker, without mocks, bypass flags, skips or expected-failure annotations. Its comment identifies these numbers as a known defect. A distribution change fails the test and requires inspection of the full sweep before updating the baseline. The goals of all twelve seasons being reachable, a useful spread and warnings caused by personal ambiguity remain unmet; a passing characterisation test does not establish accurate seasons or calibrated confidence.
 
 The original improvement assertions failed before the test was changed to characterise the defect (exit 1, unreachable list condensed). This evidence remains valid:
 

@@ -165,7 +165,6 @@ export function App() {
   const [skinId, setSkinId] = useState(inputSwatches.skin[4]!.id);
   const [hairId, setHairId] = useState(inputSwatches.hair[2]!.id);
   const [eyeId, setEyeId] = useState(inputSwatches.eye[2]!.id);
-  const [greyPercent, setGreyPercent] = useState(0);
   const [confidence, setConfidence] = useState(confidenceChoices[0]!.value);
   const [result, setResult] = useState<StyleProfile>();
   const resultHeading = useRef<HTMLHeadingElement>(null);
@@ -180,7 +179,6 @@ export function App() {
       chosen(inputSwatches.skin, skinId),
       chosen(inputSwatches.hair, hairId),
       chosen(inputSwatches.eye, eyeId),
-      greyPercent,
       confidence,
     )));
   }
@@ -204,7 +202,7 @@ export function App() {
 
         <fieldset className="mt-12">
           <legend className="text-2xl font-semibold tracking-tight text-stone-950">2. Choose your natural hair colour</legend>
-          <p className="mt-2 max-w-3xl leading-7 text-stone-700">Think of your natural colour before dyeing or greying. These measured references do not cover every variation, so choose the closest one.</p>
+          <p className="mt-2 max-w-3xl leading-7 text-stone-700">Think of your natural colour before dyeing. These measured references do not cover every variation, so choose the closest one.</p>
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {inputSwatches.hair.map((option) => <SwatchChoice checked={hairId === option.id} group="hair" key={option.id} onChange={setHairId} option={option} />)}
           </div>
@@ -219,16 +217,7 @@ export function App() {
         </fieldset>
 
         <fieldset className="mt-12">
-          <legend className="text-2xl font-semibold tracking-tight text-stone-950">4. How much of your hair is grey?</legend>
-          <div className="mt-4 max-w-2xl rounded-xl border border-stone-300 bg-white p-5">
-            <label className="flex items-center justify-between gap-4 text-lg font-semibold text-stone-950" htmlFor="grey-percent"><span>Grey hair</span><output>{greyPercent}%</output></label>
-            <input className="mt-5 w-full accent-stone-950" id="grey-percent" max="100" min="0" onChange={(event) => setGreyPercent(Number(event.target.value))} step="5" type="range" value={greyPercent} />
-            <p className="mt-3 leading-7 text-stone-700">This is passed to the resolver but does not affect version one’s result yet.</p>
-          </div>
-        </fieldset>
-
-        <fieldset className="mt-12">
-          <legend className="text-2xl font-semibold tracking-tight text-stone-950">5. How well did the references match you?</legend>
+          <legend className="text-2xl font-semibold tracking-tight text-stone-950">4. How well did the references match you?</legend>
           <p className="mt-2 max-w-3xl leading-7 text-stone-700">A low answer caps the result’s score separation. It does not mean you chose badly; it tells the resolver the available references did not describe you well enough.</p>
           <div className="mt-5 grid gap-3">
             {confidenceChoices.map((choice) => (

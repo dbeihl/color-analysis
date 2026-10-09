@@ -33,7 +33,7 @@ const committedSwatches = new Set(
 describe('manual color measurement', () => {
   const input: ColoringInput = {
     skin: { lab: { mode: 'lab65', l: 60, a: 3, b: 4 }, monkBand: 5 },
-    hair: { lab: { mode: 'lab65', l: 30, a: 2, b: 3 }, naturalLevel: 3, greyPercent: 0 },
+    hair: { lab: { mode: 'lab65', l: 30, a: 2, b: 3 }, naturalLevel: 3 },
     eye: { lab: { mode: 'lab65', l: 45, a: -2, b: 5 } },
     source: 'manual',
     confidence: 0.8,
@@ -65,6 +65,13 @@ describe('manual color measurement', () => {
 
   it('rejects manual values outside the domain contract', () => {
     expect(() => measureColoring({ ...input, confidence: 1.01 })).toThrow();
+  });
+
+  it('rejects the removed grey-percentage field at the resolver boundary', () => {
+    expect(() => resolveColoring({
+      ...input,
+      hair: { ...input.hair, greyPercent: 50 },
+    })).toThrow();
   });
 });
 

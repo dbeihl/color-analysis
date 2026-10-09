@@ -13,7 +13,7 @@ it('characterises the known season collapse across every picker combination', ()
   for (const skin of inputSwatches.skin) {
     for (const hair of inputSwatches.hair) {
       for (const eye of inputSwatches.eye) {
-        const result = resolveColoring(toColoringInput(skin, hair, eye, 0, 0.8));
+        const result = resolveColoring(toColoringInput(skin, hair, eye, 0.8));
         distribution[result.colorSeason.primary]!++;
         lowConfidence += Number(result.warnings.some(({ code }) => code === 'low-confidence'));
         conflictingSignals += Number(result.warnings.some(({ code }) => code === 'conflicting-signals'));
