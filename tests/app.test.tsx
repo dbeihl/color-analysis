@@ -5,12 +5,11 @@ import { inputSwatches, toColoringInput } from '../src/input-swatches';
 import { resolveColoring } from '../src/resolver';
 import golden from './fixtures/resolver-golden.json';
 
-function chosenInput(skinId: string, hairId: string, eyeId: string, confidence: number, greyPercent = 0) {
+function chosenInput(skinId: string, hairId: string, eyeId: string, confidence: number) {
   return toColoringInput(
     inputSwatches.skin.find(({ id }) => id === skinId)!,
     inputSwatches.hair.find(({ id }) => id === hairId)!,
     inputSwatches.eye.find(({ id }) => id === eyeId)!,
-    greyPercent,
     confidence,
   );
 }
@@ -80,7 +79,7 @@ describe('skin-to-hair contrast reporting', () => {
 
 describe('swatch to engine input wiring', () => {
   it('carries each chosen swatch into its own field of the engine input', () => {
-    const input = chosenInput('monk-4', 'red', 'iris-golden-brown', 0.45, 15);
+    const input = chosenInput('monk-4', 'red', 'iris-golden-brown', 0.45);
 
     expect(input.skin.lab.mode).toBe('lab65');
     expect(input.skin.lab.l).toBeCloseTo(87.5728906, 5);
@@ -93,7 +92,6 @@ describe('swatch to engine input wiring', () => {
     expect(input.hair.lab.a).toBeCloseTo(9.6, 5);
     expect(input.hair.lab.b).toBeCloseTo(12.13, 5);
     expect(input.hair.naturalLevel).toBe(4);
-    expect(input.hair.greyPercent).toBe(15);
 
     expect(input.eye.lab.mode).toBe('lab65');
     expect(input.eye.lab.l).toBeCloseTo(36.5824913, 5);
@@ -121,5 +119,13 @@ describe('form framing', () => {
     const html = renderToStaticMarkup(<App />);
 
     expect(html).toContain('The resolver will find the nearest match among twelve designed palette recipes, show its score separation honestly, and put its palette in comparison order.');
+  });
+
+  it('does not offer a grey-percentage answer and keeps the remaining question order', () => {
+    const html = renderToStaticMarkup(<App />);
+
+    expect(html).not.toContain('grey-percent');
+    expect(html).not.toContain('How much of your hair is grey?');
+    expect(html).toContain('4. How well did the references match you?');
   });
 });

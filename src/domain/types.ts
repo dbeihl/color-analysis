@@ -25,7 +25,7 @@ export interface Lab {
 
 export interface ColoringInput {
   skin: { lab: Lab; monkBand: TenBand };
-  hair: { lab: Lab; naturalLevel: TenBand; greyPercent: number };
+  hair: { lab: Lab; naturalLevel: TenBand };
   eye: { lab: Lab };
   source: 'manual';
   /** Self-reported certainty in [0, 1], never a calibrated accuracy probability. */
