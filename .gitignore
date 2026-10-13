@@ -7,3 +7,5 @@ __pycache__/
 .work/
 .python-environment-*/
 .palette-test-*/
+test-results/
+playwright-report/
